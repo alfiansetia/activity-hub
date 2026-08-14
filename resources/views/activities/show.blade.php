@@ -53,8 +53,8 @@
                 </a>
             @endif
 
-            {{-- Delete (admin only) --}}
-            @if (auth()->user()->is_admin)
+            {{-- Delete (admin: any status, owner: pending only) --}}
+            @if (auth()->user()->is_admin || ($activity->user_id === auth()->id() && $activity->status === 'pending'))
                 <form method="POST" action="{{ route('activities.destroy', $activity) }}"
                     onsubmit="return confirm('Delete this activity?')" class="d-inline">
                     @csrf

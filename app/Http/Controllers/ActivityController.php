@@ -111,6 +111,13 @@ class ActivityController extends Controller
 
     public function show(Activity $activity)
     {
+        $user = auth()->user();
+
+        // User can only view activities from their own company
+        if ($user->is_user && $activity->company_id !== $user->company_id) {
+            abort(403);
+        }
+
         $activity->load(['user', 'company', 'attachments', 'acceptor', 'rejector']);
         return view('activities.show', compact('activity'));
     }
@@ -124,8 +131,13 @@ class ActivityController extends Controller
         }
 
         // Only creator, same-company user, or admin can edit
-        if ($user->is_user && $activity->user_id !== $user->id && $activity->company_id !== $user->company_id) {
-            abort(403);
+        if ($user->is_user) {
+            if ($user->company_status !== 'accept' || !$user->company_id) {
+                abort(403);
+            }
+            if ($activity->user_id !== $user->id && $activity->company_id !== $user->company_id) {
+                abort(403);
+            }
         }
 
         $activity->load('attachments');
@@ -141,8 +153,20 @@ class ActivityController extends Controller
 
     public function update(Request $request, Activity $activity)
     {
+        $user = auth()->user();
+
         if ($activity->status === 'accept') {
             return back()->with('error', 'Accepted activities cannot be edited.');
+        }
+
+        // Only creator, same-company user, or admin can update
+        if ($user->is_user) {
+            if ($user->company_status !== 'accept' || !$user->company_id) {
+                abort(403);
+            }
+            if ($activity->user_id !== $user->id && $activity->company_id !== $user->company_id) {
+                abort(403);
+            }
         }
 
         $validated = $request->validate([
@@ -195,7 +219,13 @@ class ActivityController extends Controller
 
     public function destroy(Activity $activity)
     {
-        if (auth()->user()->role !== 'admin') {
+        $user = auth()->user();
+
+        if ($user->is_admin) {
+            // Admin can delete any activity in any status
+        } elseif ($user->is_user && $activity->user_id === $user->id && $activity->status === 'pending') {
+            // Owner can delete only their own pending activities
+        } else {
             abort(403);
         }
 
