@@ -72,22 +72,6 @@
                                 Rejected on {{ $user->company_reject_at->format('d M Y, H:i') }}
                             </small>
                         @endif
-                        <form method="POST" action="{{ route('profile.company-request') }}"
-                            class="mt-3 d-flex gap-2 align-items-end">
-                            @csrf
-                            <select name="company_id" class="form-select form-select-sm" style="max-width: 250px;" required>
-                                <option value="">-- Select Company --</option>
-                                @foreach ($companies as $company)
-                                    <option value="{{ $company->id }}"
-                                        {{ $company->id == $user->company_id ? 'selected' : '' }}>
-                                        {{ $company->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <button type="submit" class="btn btn-sm btn-outline-primary text-nowrap">
-                                <i class="bi bi-arrow-repeat me-1"></i> Re-submit Request
-                            </button>
-                        </form>
                     </div>
                 </div>
             @else
@@ -105,6 +89,51 @@
                     </div>
                 </div>
             @endif
+        </div>
+    @endif
+
+    {{-- Change Company (user already has a company — any status) --}}
+    @if ($user->company_id && $user->is_user)
+        <div class="fade-up mb-4">
+            <div class="card" style="border-left: 4px solid var(--primary); border-radius: 0.75rem;">
+                <div class="card-body">
+                    <div class="d-flex align-items-start gap-3">
+                        <div style="font-size: 1.5rem; color: var(--primary); line-height: 1;">
+                            <i class="bi bi-arrow-left-right"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="fw-bold mb-1">Change Company</h6>
+                            <p class="mb-3" style="font-size: 0.875rem; color: var(--text-secondary);">
+                                Your current company is <strong>{{ $user->company->name }}</strong>.
+                                Select a different company below to submit a change request. Your status will be reset to
+                                pending.
+                            </p>
+                            <form method="POST" action="{{ route('profile.company-request') }}"
+                                class="d-flex gap-2 align-items-end">
+                                @csrf
+                                <div class="flex-grow-1" style="max-width: 350px;">
+                                    <select name="company_id" class="form-select @error('company_id') is-invalid @enderror"
+                                        required>
+                                        <option value="">-- Select Company --</option>
+                                        @foreach ($companies as $company)
+                                            <option value="{{ $company->id }}"
+                                                {{ old('company_id') == $company->id ? 'selected' : '' }}>
+                                                {{ $company->name }}{{ $company->id == $user->company_id ? ' (current)' : '' }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('company_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <button type="submit" class="btn btn-outline-primary text-nowrap">
+                                    <i class="bi bi-arrow-repeat me-1"></i> Request Change
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     @endif
 

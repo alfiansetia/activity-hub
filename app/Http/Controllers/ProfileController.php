@@ -52,13 +52,14 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        if ($user->company_id) {
-            return back()->with('error', 'You already have a company assigned.');
-        }
-
         $validated = $request->validate([
             'company_id' => ['required', 'exists:companies,id'],
         ]);
+
+        // Validate: cannot select the same company
+        if ($user->company_id && $user->company_id == $validated['company_id']) {
+            return back()->with('error', 'You are already a member of this company. Please select a different company.');
+        }
 
         $user->update([
             'company_id' => $validated['company_id'],
@@ -69,6 +70,10 @@ class ProfileController extends Controller
             'company_accept_at' => null,
             'company_accept_by' => null,
         ]);
+
+        if ($user->wasChanged('company_id') && $user->getOriginal('company_id')) {
+            return back()->with('success', 'Company change request submitted. Please wait for admin approval.');
+        }
 
         return back()->with('success', 'Company join request submitted. Please wait for admin approval.');
     }
