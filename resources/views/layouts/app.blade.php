@@ -14,7 +14,7 @@
     @stack('styles')
 </head>
 
-<body class="bg-light">
+<body>
 
     {{-- Sidebar Backdrop (mobile) --}}
     <div class="sidebar-backdrop"></div>
@@ -28,18 +28,18 @@
         @include('partials.navbar')
 
         {{-- Page Content --}}
-        <div class="container-fluid py-4 px-3 px-lg-4">
+        <div class="page-content">
             {{-- Flash Messages --}}
             @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
+                <div class="alert alert-success alert-dismissible fade show fade-up" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             @endif
 
             @if (session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="bi bi-exclamation-triangle me-2"></i>{{ session('error') }}
+                <div class="alert alert-danger alert-dismissible fade show fade-up" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             @endif
