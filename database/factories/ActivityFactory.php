@@ -14,11 +14,11 @@ class ActivityFactory extends Factory
     public function definition(): array
     {
         return [
-            'date'         => fake()->dateTimeBetween('-30 days', 'now'),
-            'title'        => fake()->sentence(3),
-            'descriptions' => fake()->paragraph(),
-            'rules'        => fake()->optional(0.6)->sentence(),
-            'tools'        => fake()->optional(0.5)->words(3, true),
+            'date'         => fake('id_ID')->dateTimeBetween('-30 days', 'now'),
+            'title'        => fake('id_ID')->sentence(3),
+            'descriptions' => fake('id_ID')->paragraph(),
+            'rules'        => fake('id_ID')->optional(0.6)->sentence(),
+            'tools'        => fake('id_ID')->optional(0.5)->words(3, true),
             'user_id'      => User::factory(),
             'company_id'   => Company::factory(),
             'status'       => 'pending',
@@ -46,7 +46,7 @@ class ActivityFactory extends Factory
             'status'        => 'reject',
             'reject_by'     => User::factory(),
             'reject_at'     => now(),
-            'reject_reason' => fake()->sentence(),
+            'reject_reason' => fake('id_ID')->sentence(),
         ]);
     }
 }

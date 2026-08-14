@@ -12,8 +12,8 @@ class AttachmentFactory extends Factory
     public function definition(): array
     {
         return [
-            'caption'   => fake()->sentence(2),
-            'image_url' => 'uploads/' . fake()->uuid() . '.jpg',
+            'caption'   => fake('id_ID')->sentence(2),
+            'image_url' => 'uploads/' . fake('id_ID')->uuid() . '.jpg',
         ];
     }
 }

@@ -12,7 +12,7 @@ class CompanyFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->unique()->company(),
+            'name' => fake('id_ID')->unique()->company(),
         ];
     }
 }
