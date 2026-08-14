@@ -37,7 +37,7 @@ class UserController extends Controller
 
     public function reject(Request $request, User $user)
     {
-        $request->validate(['company_reject_reason' => 'required|string']);
+        $request->validate(['company_reject_reason' => ['required', 'string', 'max:65535']]);
 
         $user->update([
             'company_status'        => 'reject',
@@ -61,10 +61,10 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $validated = $request->validate([
-            'role' => ['required', 'in:admin,dosen,user'],
+            'role' => ['required', 'string', 'max:255', 'in:admin,dosen,user'],
             'company_id' => ['nullable', 'exists:companies,id'],
-            'company_status' => ['required', 'in:pending,accept,reject'],
-            'company_reject_reason' => ['nullable', 'string'],
+            'company_status' => ['required', 'string', 'max:255', 'in:pending,accept,reject'],
+            'company_reject_reason' => ['nullable', 'string', 'max:65535'],
         ]);
 
         $updateData = [

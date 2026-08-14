@@ -76,16 +76,21 @@ class User extends Authenticatable
     // Company status accessors
     public function getCompanyIsPendingAttribute(): bool
     {
-        return $this->company_status === 'pending';
+        return strtolower($this->company_status) === 'pending';
     }
 
     public function getCompanyIsAcceptAttribute(): bool
     {
-        return $this->company_status === 'accept';
+        return strtolower($this->company_status) === 'accept';
     }
 
     public function getCompanyIsRejectAttribute(): bool
     {
-        return $this->company_status === 'reject';
+        return strtolower($this->company_status) === 'reject';
+    }
+
+    public function getCompanyIsNoneAttribute(): bool
+    {
+        return strtolower($this->company_status) === 'none';
     }
 }

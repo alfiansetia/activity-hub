@@ -77,9 +77,9 @@ class ActivityController extends Controller
 
         $validated = $request->validate([
             'title'        => ['required', 'string', 'max:255'],
-            'descriptions' => ['nullable', 'string'],
-            'rules'        => ['nullable', 'string'],
-            'tools'        => ['nullable', 'string'],
+            'descriptions' => ['nullable', 'string', 'max:65535'],
+            'rules'        => ['nullable', 'string', 'max:65535'],
+            'tools'        => ['nullable', 'string', 'max:65535'],
             'company_id'   => ['nullable', 'exists:companies,id'],
             'images'       => ['nullable', 'array'],
             'images.*'     => ['string'], // base64
@@ -171,9 +171,9 @@ class ActivityController extends Controller
 
         $validated = $request->validate([
             'title'        => ['required', 'string', 'max:255'],
-            'descriptions' => ['nullable', 'string'],
-            'rules'        => ['nullable', 'string'],
-            'tools'        => ['nullable', 'string'],
+            'descriptions' => ['nullable', 'string', 'max:65535'],
+            'rules'        => ['nullable', 'string', 'max:65535'],
+            'tools'        => ['nullable', 'string', 'max:65535'],
             'company_id'   => ['nullable', 'exists:companies,id'],
             'images'       => ['nullable', 'array'],
             'images.*'     => ['string'],
@@ -244,7 +244,7 @@ class ActivityController extends Controller
         if (auth()->user()->role !== 'dosen') abort(403);
 
         $validated = $request->validate([
-            'dosen_note' => ['nullable', 'string'],
+            'dosen_note' => ['nullable', 'string', 'max:65535'],
         ]);
 
         $activity->update([
@@ -262,7 +262,7 @@ class ActivityController extends Controller
     {
         if (auth()->user()->role !== 'dosen') abort(403);
 
-        $request->validate(['reject_reason' => 'required|string']);
+        $request->validate(['reject_reason' => ['required', 'string', 'max:65535']]);
 
         $activity->update([
             'status'        => 'reject',

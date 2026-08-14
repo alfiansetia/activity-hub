@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
 
-            $table->string('company_status')->default('pending'); // pending , accept, reject
+            $table->string('company_status')->default('pending'); // pending , accept, reject, none
             $table->text('company_reject_reason')->nullable();
             $table->timestamp('company_reject_at')->nullable();
             $table->timestamp('company_accept_at')->nullable();

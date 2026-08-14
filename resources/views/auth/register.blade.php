@@ -30,27 +30,6 @@
                 @enderror
             </div>
 
-            {{-- Company --}}
-            <div class="mb-3">
-                <label for="company_id" class="form-label">
-                    Company <span style="color: var(--text-muted); font-weight: 400;">(optional)</span>
-                </label>
-                <select class="form-select @error('company_id') is-invalid @enderror" id="company_id" name="company_id">
-                    <option value="">— Select Company —</option>
-                    @foreach ($companies as $company)
-                        <option value="{{ $company->id }}" {{ old('company_id') == $company->id ? 'selected' : '' }}>
-                            {{ $company->name }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('company_id')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-                <small class="d-block mt-1" style="color: var(--text-muted); font-size: 0.75rem;">
-                    <i class="bi bi-info-circle me-1"></i>Your account will need admin approval before access is granted.
-                </small>
-            </div>
-
             {{-- Password --}}
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
