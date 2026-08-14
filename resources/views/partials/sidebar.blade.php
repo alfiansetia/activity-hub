@@ -32,6 +32,13 @@
             <span>Activities</span>
         </a>
 
+        {{-- Calendar --}}
+        <a class="sidebar-link {{ request()->routeIs('calendar.*') ? 'active' : '' }}"
+            href="{{ route('calendar.index') }}">
+            <i class="bi bi-calendar3"></i>
+            <span>Calendar</span>
+        </a>
+
         {{-- Create Activity (user only) --}}
         @if (auth()->user()->is_user)
             <a class="sidebar-link {{ request()->routeIs('activities.create') ? 'active' : '' }}"
