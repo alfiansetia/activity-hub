@@ -33,7 +33,7 @@
                     </div>
 
                     {{-- Company --}}
-                    @if (auth()->user()->role === 'admin')
+                    @if (auth()->user()->is_admin)
                         <div class="col-12">
                             <label for="company_id" class="form-label fw-semibold">Company <span
                                     class="text-danger">*</span></label>

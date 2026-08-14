@@ -13,7 +13,7 @@
             {{-- Edit button --}}
             @if (
                 $activity->status !== 'accept' &&
-                    (auth()->user()->role === 'admin' ||
+                    (auth()->user()->is_admin ||
                         $activity->user_id === auth()->id() ||
                         $activity->company_id === auth()->user()->company_id))
                 <a href="{{ route('activities.edit', $activity) }}" class="btn btn-primary btn-sm">
@@ -22,7 +22,7 @@
             @endif
 
             {{-- Delete (admin only) --}}
-            @if (auth()->user()->role === 'admin')
+            @if (auth()->user()->is_admin)
                 <form method="POST" action="{{ route('activities.destroy', $activity) }}"
                     onsubmit="return confirm('Delete this activity?')" class="d-inline">
                     @csrf
@@ -34,14 +34,12 @@
             @endif
 
             {{-- Dosen: Accept / Reject --}}
-            @if (auth()->user()->role === 'dosen' && $activity->status === 'pending')
-                <form method="POST" action="{{ route('activities.accept', $activity) }}" class="d-inline">
-                    @csrf
-                    <button type="submit" class="btn btn-sm"
-                        style="background: var(--success); color: #fff; font-weight: 600; box-shadow: 0 2px 8px rgba(34,197,94,0.3);">
-                        <i class="bi bi-check-lg me-1"></i> Accept
-                    </button>
-                </form>
+            @if (auth()->user()->is_dosen && $activity->status === 'pending')
+                <button type="button" class="btn btn-sm"
+                    style="background: var(--success); color: #fff; font-weight: 600; box-shadow: 0 2px 8px rgba(34,197,94,0.3);"
+                    data-bs-toggle="modal" data-bs-target="#acceptModal">
+                    <i class="bi bi-check-lg me-1"></i> Accept
+                </button>
                 <button type="button" class="btn btn-sm"
                     style="background: var(--danger); color: #fff; font-weight: 600; box-shadow: 0 2px 8px rgba(239,68,68,0.3);"
                     data-bs-toggle="modal" data-bs-target="#rejectModal">
@@ -229,6 +227,12 @@
                             </div>
                             <div class="flex-grow-1">
                                 <h6 class="fw-bold mb-1" style="color: var(--success);">Activity Accepted</h6>
+                                @if ($activity->dosen_note)
+                                    <p class="mb-2"
+                                        style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.6;">
+                                        <i class="bi bi-chat-quote me-1"></i> {{ $activity->dosen_note }}
+                                    </p>
+                                @endif
                                 @if ($activity->acceptor)
                                     <small style="color: var(--text-muted);">
                                         <i class="bi bi-person-fill me-1"></i> {{ $activity->acceptor->name }}
@@ -378,8 +382,48 @@
         </div>
     </div>
 
+    {{-- Accept Modal --}}
+    @if (auth()->user()->is_dosen && $activity->status === 'pending')
+        <div class="modal fade" id="acceptModal" tabindex="-1">
+            <div class="modal-dialog">
+                <form method="POST" action="{{ route('activities.accept', $activity) }}">
+                    @csrf
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h6 class="modal-title fw-bold">
+                                <i class="bi bi-check-circle-fill me-2" style="color: var(--success);"></i> Accept
+                                Activity
+                            </h6>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p style="color: var(--text-muted); font-size: 0.85rem;" class="mb-3">
+                                You are about to accept <strong
+                                    style="color: var(--text-primary);">"{{ $activity->title }}"</strong>.
+                                You may add an optional note for the user.
+                            </p>
+                            <div class="mb-0">
+                                <label class="form-label">Dosen Note <span
+                                        style="color: var(--text-muted); font-size: 0.8rem;">(optional)</span></label>
+                                <textarea name="dosen_note" class="form-control" rows="3"
+                                    placeholder="Add a note or feedback for the user..."></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn"
+                                style="background: var(--success); color: #fff; font-weight: 600;">
+                                <i class="bi bi-check-lg me-1"></i> Accept Activity
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
+
     {{-- Reject Modal --}}
-    @if (auth()->user()->role === 'dosen' && $activity->status === 'pending')
+    @if (auth()->user()->is_dosen && $activity->status === 'pending')
         <div class="modal fade" id="rejectModal" tabindex="-1">
             <div class="modal-dialog">
                 <form method="POST" action="{{ route('activities.reject', $activity) }}">

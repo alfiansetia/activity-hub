@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
@@ -10,8 +11,11 @@ class ProfileController extends Controller
 {
     public function edit(Request $request)
     {
+        $companies = Company::orderBy('name')->get();
+
         return view('profile.edit', [
             'user' => $request->user(),
+            'companies' => $companies,
         ]);
     }
 
@@ -40,5 +44,30 @@ class ProfileController extends Controller
         ]);
 
         return back()->with('success', 'Password changed successfully.');
+    }
+
+    public function requestCompany(Request $request)
+    {
+        $user = $request->user();
+
+        if ($user->company_id) {
+            return back()->with('error', 'You already have a company assigned.');
+        }
+
+        $validated = $request->validate([
+            'company_id' => ['required', 'exists:companies,id'],
+        ]);
+
+        $user->update([
+            'company_id' => $validated['company_id'],
+            'company_status' => 'pending',
+            'company_reject_reason' => null,
+            'company_reject_at' => null,
+            'company_reject_by' => null,
+            'company_accept_at' => null,
+            'company_accept_by' => null,
+        ]);
+
+        return back()->with('success', 'Company join request submitted. Please wait for admin approval.');
     }
 }

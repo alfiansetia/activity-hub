@@ -32,8 +32,8 @@
             <span>Activities</span>
         </a>
 
-        {{-- Create Activity (user/dosen only) --}}
-        @if (auth()->user()->role !== 'admin')
+        {{-- Create Activity (user only) --}}
+        @if (auth()->user()->is_user)
             <a class="sidebar-link {{ request()->routeIs('activities.create') ? 'active' : '' }}"
                 href="{{ route('activities.create') }}">
                 <i class="bi bi-plus-circle-fill"></i>
@@ -57,7 +57,7 @@
             <div class="sidebar-divider"></div>
             <div class="sidebar-label">Administration</div>
 
-            @if (auth()->user()->role === 'admin')
+            @if (auth()->user()->is_admin)
                 <a class="sidebar-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
                     href="{{ route('admin.users.index') }}">
                     <i class="bi bi-people-fill"></i>

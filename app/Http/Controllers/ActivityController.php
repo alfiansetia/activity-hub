@@ -14,26 +14,47 @@ class ActivityController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
+        $selectedCompanyId = $request->company_id;
+
+        // Dosen: show company selection when no company filter
+        if ($user->is_dosen && !$selectedCompanyId) {
+            $companies = \App\Models\Company::withCount([
+                'activities',
+                'activities as pending_count' => fn($q) => $q->where('status', 'pending'),
+                'activities as accept_count' => fn($q) => $q->where('status', 'accept'),
+                'activities as reject_count' => fn($q) => $q->where('status', 'reject'),
+            ])->orderBy('name')->get();
+
+            return view('activities.index', compact('companies'));
+        }
 
         $activities = Activity::with(['user', 'company'])
-            ->when($user->role === 'user', fn($q) => $q->where('company_id', $user->company_id))
+            ->when($user->is_user, fn($q) => $q->where('company_id', $user->company_id))
+            ->when($selectedCompanyId, fn($q) => $q->where('company_id', $selectedCompanyId))
             ->when($request->status, fn($q) => $q->where('status', $request->status))
             ->when($request->search, fn($q) => $q->where('title', 'like', "%{$request->search}%"))
             ->latest()
             ->paginate(10)
             ->withQueryString();
 
-        return view('activities.index', compact('activities'));
+        $selectedCompany = $selectedCompanyId ? \App\Models\Company::find($selectedCompanyId) : null;
+
+        return view('activities.index', compact('activities', 'selectedCompany'));
     }
 
     public function create()
     {
         $user = auth()->user();
-        if ($user->role === 'user' && ($user->company_status !== 'accept' || !$user->company_id)) {
+
+        if (!$user->is_user) {
+            return back()->with('error', 'Only regular users can create activities.');
+        }
+
+        if ($user->company_status !== 'accept' || !$user->company_id) {
             return back()->with('error', 'Your account is not yet approved or you have no company assigned.');
         }
 
-        $companies = $user->role === 'admin'
+        $companies = $user->is_admin
             ? \App\Models\Company::orderBy('name')->get()
             : collect([$user->company]);
 
@@ -45,6 +66,14 @@ class ActivityController extends Controller
     public function store(Request $request)
     {
         $user = auth()->user();
+
+        if (!$user->is_user) {
+            return back()->with('error', 'Only regular users can create activities.');
+        }
+
+        if ($user->company_status !== 'accept' || !$user->company_id) {
+            return back()->with('error', 'Your account is not yet approved or you have no company assigned.');
+        }
 
         $validated = $request->validate([
             'title'        => ['required', 'string', 'max:255'],
@@ -95,13 +124,13 @@ class ActivityController extends Controller
         }
 
         // Only creator, same-company user, or admin can edit
-        if ($user->role === 'user' && $activity->user_id !== $user->id && $activity->company_id !== $user->company_id) {
+        if ($user->is_user && $activity->user_id !== $user->id && $activity->company_id !== $user->company_id) {
             abort(403);
         }
 
         $activity->load('attachments');
 
-        $companies = $user->role === 'admin'
+        $companies = $user->is_admin
             ? \App\Models\Company::orderBy('name')->get()
             : collect([$user->company]);
 
@@ -180,14 +209,19 @@ class ActivityController extends Controller
     }
 
     // Dosen: accept activity
-    public function accept(Activity $activity)
+    public function accept(Request $request, Activity $activity)
     {
         if (auth()->user()->role !== 'dosen') abort(403);
 
+        $validated = $request->validate([
+            'dosen_note' => ['nullable', 'string'],
+        ]);
+
         $activity->update([
-            'status'    => 'accept',
-            'accept_by' => auth()->id(),
-            'accept_at' => now(),
+            'status'     => 'accept',
+            'accept_by'  => auth()->id(),
+            'accept_at'  => now(),
+            'dosen_note' => $validated['dosen_note'] ?? null,
         ]);
 
         return back()->with('success', 'Activity accepted.');

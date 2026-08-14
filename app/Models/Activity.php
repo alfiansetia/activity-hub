@@ -24,6 +24,7 @@ class Activity extends Model
         'reject_at',
         'accept_at',
         're_submit_at',
+        'dosen_note',
     ];
 
     protected function casts(): array

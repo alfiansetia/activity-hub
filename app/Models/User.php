@@ -38,6 +38,21 @@ class User extends Authenticatable
         ];
     }
 
+    public function getIsAdminAttribute()
+    {
+        return strtolower($this->role) === 'admin';
+    }
+
+    public function getIsUserAttribute()
+    {
+        return strtolower($this->role) === 'user';
+    }
+
+    public function getIsDosenAttribute()
+    {
+        return strtolower($this->role) === 'dosen';
+    }
+
     public function company()
     {
         return $this->belongsTo(Company::class);

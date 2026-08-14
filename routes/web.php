@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::post('/profile/company-request', [ProfileController::class, 'requestCompany'])->name('profile.company-request');
 
     // Activities
     Route::prefix('activities')->name('activities.')->group(function () {

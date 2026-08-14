@@ -88,9 +88,9 @@
                                 </td>
                                 <td class="d-none d-md-table-cell text-muted small">{{ $user->email }}</td>
                                 <td>
-                                    @if ($user->role === 'admin')
+                                    @if ($user->is_admin)
                                         <span class="badge bg-primary">Admin</span>
-                                    @elseif ($user->role === 'dosen')
+                                    @elseif ($user->is_dosen)
                                         <span class="badge bg-info text-dark">Dosen</span>
                                     @else
                                         <span class="badge bg-secondary">User</span>
@@ -178,12 +178,12 @@
                                                 <div class="mb-3">
                                                     <label class="form-label fw-semibold">Role</label>
                                                     <select name="role" class="form-select">
-                                                        <option value="user"
-                                                            {{ $user->role === 'user' ? 'selected' : '' }}>User</option>
-                                                        <option value="dosen"
-                                                            {{ $user->role === 'dosen' ? 'selected' : '' }}>Dosen</option>
-                                                        <option value="admin"
-                                                            {{ $user->role === 'admin' ? 'selected' : '' }}>Admin</option>
+                                                        <option value="user" {{ $user->is_user ? 'selected' : '' }}>User
+                                                        </option>
+                                                        <option value="dosen" {{ $user->is_dosen ? 'selected' : '' }}>
+                                                            Dosen</option>
+                                                        <option value="admin" {{ $user->is_admin ? 'selected' : '' }}>
+                                                            Admin</option>
                                                     </select>
                                                 </div>
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Activity;
+use App\Models\Company;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -12,7 +13,7 @@ class DashboardController extends Controller
         $user = auth()->user();
 
         // Build query based on role
-        if ($user->role === 'admin' || $user->role === 'dosen') {
+        if ($user->is_admin || $user->is_dosen) {
             $query = Activity::query();
         } else {
             $query = Activity::where('company_id', $user->company_id);
@@ -26,11 +27,13 @@ class DashboardController extends Controller
         ];
 
         $recentActivities = Activity::with(['user', 'company'])
-            ->when($user->role === 'user', fn($q) => $q->where('company_id', $user->company_id))
+            ->when($user->is_user, fn($q) => $q->where('company_id', $user->company_id))
             ->latest()
             ->take(10)
             ->get();
 
-        return view('dashboard', compact('stats', 'recentActivities'));
+        $companies = Company::orderBy('name')->get();
+
+        return view('dashboard', compact('stats', 'recentActivities', 'companies'));
     }
 }
