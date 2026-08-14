@@ -3,12 +3,13 @@
 @section('title', 'Create Activity')
 
 @section('content')
-    <div class="d-flex align-items-center gap-2 mb-4">
-        <a href="{{ route('activities.index') }}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left me-1"></i> Back
-        </a>
-        <h4 class="fw-semibold mb-0">Create Activity</h4>
-    </div>
+    @include('partials.breadcrumb', [
+        'breadcrumbs' => [
+            ['label' => 'Dashboard', 'url' => route('dashboard'), 'icon' => 'bi bi-house-door'],
+            ['label' => 'Activities', 'url' => route('activities.index'), 'icon' => 'bi bi-calendar-check'],
+            ['label' => 'Create Activity'],
+        ],
+    ])
 
     <form method="POST" action="{{ route('activities.store') }}" id="activityForm">
         @csrf

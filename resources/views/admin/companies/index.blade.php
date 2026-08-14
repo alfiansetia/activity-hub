@@ -3,7 +3,14 @@
 @section('title', 'Manage Companies')
 
 @section('content')
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    @include('partials.breadcrumb', [
+        'breadcrumbs' => [
+            ['label' => 'Dashboard', 'url' => route('dashboard'), 'icon' => 'bi bi-house-door'],
+            ['label' => 'Company Management'],
+        ],
+    ])
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2 fade-up">
         <div>
             <h4 class="fw-semibold mb-1">Company Management</h4>
             <p class="text-muted small mb-0">Create, edit, and manage companies.</p>

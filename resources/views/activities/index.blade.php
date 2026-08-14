@@ -155,6 +155,14 @@
 @section('content')
     @if (isset($companies))
         {{-- ===================== DOSEN: COMPANY GRID ===================== --}}
+        {{-- Breadcrumb --}}
+        @include('partials.breadcrumb', [
+            'breadcrumbs' => [
+                ['label' => 'Dashboard', 'url' => route('dashboard'), 'icon' => 'bi bi-house-door'],
+                ['label' => 'Activities', 'icon' => 'bi bi-calendar-check'],
+            ],
+        ])
+
         {{-- Page Hero Header --}}
         <div class="page-hero fade-up d-flex flex-wrap align-items-center justify-content-between gap-3">
             <div>
@@ -222,6 +230,28 @@
         @endif
     @else
         {{-- ===================== ACTIVITY LIST (all roles) ===================== --}}
+        {{-- Breadcrumb --}}
+        @if (isset($selectedCompany))
+            @include('partials.breadcrumb', [
+                'breadcrumbs' => [
+                    ['label' => 'Dashboard', 'url' => route('dashboard'), 'icon' => 'bi bi-house-door'],
+                    [
+                        'label' => 'Activities',
+                        'url' => route('activities.index'),
+                        'icon' => 'bi bi-calendar-check',
+                    ],
+                    ['label' => $selectedCompany->name],
+                ],
+            ])
+        @else
+            @include('partials.breadcrumb', [
+                'breadcrumbs' => [
+                    ['label' => 'Dashboard', 'url' => route('dashboard'), 'icon' => 'bi bi-house-door'],
+                    ['label' => 'Activities'],
+                ],
+            ])
+        @endif
+
         {{-- Page Hero Header --}}
         <div class="page-hero fade-up d-flex flex-wrap align-items-center justify-content-between gap-3">
             <div>

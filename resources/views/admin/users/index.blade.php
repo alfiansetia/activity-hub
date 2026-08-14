@@ -2,7 +2,7 @@
 
 @section('title', 'Manage Users')
 
-@section('styles')
+@push('styles')
     <style>
         .reject-reason-field {
             display: none;
@@ -12,15 +12,15 @@
             display: block;
         }
     </style>
-@endsection
+@endpush
 
 @section('content')
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
-        <div>
-            <h4 class="fw-semibold mb-1">User Management</h4>
-            <p class="text-muted small mb-0">Approve/reject company join requests and manage user roles.</p>
-        </div>
-    </div>
+    @include('partials.breadcrumb', [
+        'breadcrumbs' => [
+            ['label' => 'Dashboard', 'url' => route('dashboard'), 'icon' => 'bi bi-house-door'],
+            ['label' => 'User Management'],
+        ],
+    ])
 
     {{-- Filters --}}
     <div class="card border-0 shadow-sm mb-4">

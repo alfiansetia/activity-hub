@@ -3,12 +3,12 @@
 @section('title', 'My Profile')
 
 @section('content')
-    <div class="d-flex align-items-center gap-2 mb-4 fade-up">
-        <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left me-1"></i> Back
-        </a>
-        <h4 class="fw-bold mb-0">My Profile</h4>
-    </div>
+    @include('partials.breadcrumb', [
+        'breadcrumbs' => [
+            ['label' => 'Dashboard', 'url' => route('dashboard'), 'icon' => 'bi bi-house-door'],
+            ['label' => 'My Profile'],
+        ],
+    ])
 
     {{-- Company Join Request (no company assigned) --}}
     @if (!$user->company_id && $user->is_user)
@@ -137,14 +137,58 @@
                         <span class="profile-info-label">Status</span>
                         <span>
                             @if ($user->company_status === 'accept')
-                                <span class="badge badge-soft-success">Approved</span>
+                                <span class="badge badge-soft-success"><i
+                                        class="bi bi-check-circle me-1"></i>Approved</span>
                             @elseif ($user->company_status === 'reject')
-                                <span class="badge badge-soft-danger">Rejected</span>
+                                <span class="badge badge-soft-danger"><i class="bi bi-x-circle me-1"></i>Rejected</span>
                             @else
-                                <span class="badge badge-soft-warning">Pending</span>
+                                <span class="badge badge-soft-warning"><i
+                                        class="bi bi-hourglass-split me-1"></i>Pending</span>
                             @endif
                         </span>
                     </div>
+
+                    {{-- Approved Details --}}
+                    @if ($user->company_status === 'accept' && $user->company)
+                        @if ($user->company_accept_at)
+                            <div class="profile-info-row">
+                                <span class="profile-info-label">Approved At</span>
+                                <span
+                                    class="profile-info-value">{{ $user->company_accept_at->format('d M Y, H:i') }}</span>
+                            </div>
+                        @endif
+                        @if ($user->companyAcceptBy)
+                            <div class="profile-info-row">
+                                <span class="profile-info-label">Approved By</span>
+                                <span class="profile-info-value">{{ $user->companyAcceptBy->name }}</span>
+                            </div>
+                        @endif
+                    @endif
+
+                    {{-- Rejected Details --}}
+                    @if ($user->company_status === 'reject' && $user->company)
+                        @if ($user->company_reject_reason)
+                            <div class="profile-info-row">
+                                <span class="profile-info-label">Reject Reason</span>
+                                <span class="profile-info-value"
+                                    style="color: var(--danger);">{{ $user->company_reject_reason }}</span>
+                            </div>
+                        @endif
+                        @if ($user->company_reject_at)
+                            <div class="profile-info-row">
+                                <span class="profile-info-label">Rejected At</span>
+                                <span
+                                    class="profile-info-value">{{ $user->company_reject_at->format('d M Y, H:i') }}</span>
+                            </div>
+                        @endif
+                        @if ($user->companyRejectBy)
+                            <div class="profile-info-row">
+                                <span class="profile-info-label">Rejected By</span>
+                                <span class="profile-info-value">{{ $user->companyRejectBy->name }}</span>
+                            </div>
+                        @endif
+                    @endif
+
                     <div class="profile-info-row">
                         <span class="profile-info-label">Joined</span>
                         <span class="profile-info-value">{{ $user->created_at?->format('d M Y') }}</span>

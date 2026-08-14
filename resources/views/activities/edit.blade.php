@@ -3,15 +3,18 @@
 @section('title', 'Edit Activity')
 
 @section('content')
-    <div class="d-flex align-items-center gap-2 mb-4">
-        <a href="{{ route('activities.show', $activity) }}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left me-1"></i> Back
-        </a>
-        <h4 class="fw-semibold mb-0">Edit Activity</h4>
-        @if ($activity->status === 'reject')
-            <span class="badge bg-danger">Previously Rejected</span>
-        @endif
-    </div>
+    @include('partials.breadcrumb', [
+        'breadcrumbs' => [
+            ['label' => 'Dashboard', 'url' => route('dashboard'), 'icon' => 'bi bi-house-door'],
+            ['label' => 'Activities', 'url' => route('activities.index'), 'icon' => 'bi bi-calendar-check'],
+            ['label' => Str::limit($activity->title, 30), 'url' => route('activities.show', $activity)],
+            ['label' => 'Edit Activity'],
+        ],
+    ])
+
+    @if ($activity->status === 'reject')
+        <span class="badge bg-danger mb-3">Previously Rejected</span>
+    @endif
 
     @if ($activity->status === 'reject' && $activity->reject_reason)
         <div class="alert alert-danger border-0 shadow-sm">

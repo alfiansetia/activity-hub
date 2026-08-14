@@ -3,12 +3,44 @@
 @section('title', $activity->title)
 
 @section('content')
-    {{-- Back Button + Actions Bar --}}
-    <div class="d-flex flex-wrap align-items-center gap-2 mb-4 fade-up">
-        <a href="{{ route('activities.index') }}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left me-1"></i> Back
-        </a>
+    {{-- Breadcrumb --}}
+    @if (auth()->user()->is_dosen)
+        {{-- Dosen: always show company level (Dashboard → Activities → Company → Title) --}}
+        @include('partials.breadcrumb', [
+            'breadcrumbs' => [
+                ['label' => 'Dashboard', 'url' => route('dashboard'), 'icon' => 'bi bi-house-door'],
+                ['label' => 'Activities', 'url' => route('activities.index'), 'icon' => 'bi bi-calendar-check'],
+                [
+                    'label' => $activity->company->name ?? 'Company',
+                    'url' => route('activities.index', ['company_id' => $activity->company_id]),
+                ],
+                ['label' => Str::limit($activity->title, 30)],
+            ],
+        ])
+    @elseif (request('company_id'))
+        @include('partials.breadcrumb', [
+            'breadcrumbs' => [
+                ['label' => 'Dashboard', 'url' => route('dashboard'), 'icon' => 'bi bi-house-door'],
+                ['label' => 'Activities', 'url' => route('activities.index'), 'icon' => 'bi bi-calendar-check'],
+                [
+                    'label' => $activity->company->name ?? 'Company',
+                    'url' => route('activities.index', ['company_id' => $activity->company_id]),
+                ],
+                ['label' => Str::limit($activity->title, 30)],
+            ],
+        ])
+    @else
+        @include('partials.breadcrumb', [
+            'breadcrumbs' => [
+                ['label' => 'Dashboard', 'url' => route('dashboard'), 'icon' => 'bi bi-house-door'],
+                ['label' => 'Activities', 'url' => route('activities.index'), 'icon' => 'bi bi-calendar-check'],
+                ['label' => Str::limit($activity->title, 30)],
+            ],
+        ])
+    @endif
 
+    {{-- Actions Bar --}}
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-4 fade-up">
         <div class="ms-auto d-flex flex-wrap gap-2">
             {{-- Edit button --}}
             @if (

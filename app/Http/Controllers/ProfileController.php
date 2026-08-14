@@ -13,8 +13,10 @@ class ProfileController extends Controller
     {
         $companies = Company::orderBy('name')->get();
 
+        $user = $request->user()->load(['companyAcceptBy', 'companyRejectBy']);
+
         return view('profile.edit', [
-            'user' => $request->user(),
+            'user' => $user,
             'companies' => $companies,
         ]);
     }

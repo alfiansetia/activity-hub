@@ -58,6 +58,16 @@ class User extends Authenticatable
         return $this->belongsTo(Company::class);
     }
 
+    public function companyAcceptBy()
+    {
+        return $this->belongsTo(User::class, 'company_accept_by');
+    }
+
+    public function companyRejectBy()
+    {
+        return $this->belongsTo(User::class, 'company_reject_by');
+    }
+
     public function activities()
     {
         return $this->hasMany(Activity::class);
