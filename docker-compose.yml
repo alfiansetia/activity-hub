@@ -1,0 +1,15 @@
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: activity-hub
+        ports:
+            - "8000:8000"
+        volumes:
+            - .:/var/www/html
+            - /var/www/html/vendor
+            - /var/www/html/node_modules
+        env_file:
+            - .env
+        restart: unless-stopped
