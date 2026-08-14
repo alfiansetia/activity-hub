@@ -174,6 +174,107 @@
         </div>
     </section>
 
+    {{-- FAQ --}}
+    <section class="faq-section">
+        <div class="container">
+            <div class="text-center mb-5">
+                <div class="section-label">
+                    <i class="bi bi-question-circle-fill"></i> FAQ
+                </div>
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <p class="section-subtitle mx-auto">Find answers to the most common questions about Activity Hub</p>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="accordion faq-accordion" id="faqAccordion">
+                        <div class="accordion-item faq-item fade-up">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button faq-btn" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#faq1" aria-expanded="true">
+                                    What is Activity Hub?
+                                </button>
+                            </h2>
+                            <div id="faq1" class="accordion-collapse collapse show"
+                                data-bs-parent="#faqAccordion">
+                                <div class="accordion-body faq-body">
+                                    Activity Hub is a centralized platform for creating, reviewing, and tracking
+                                    activities across your organization. It streamlines workflows between Users,
+                                    Lecturers, and Admins with an intuitive interface and real-time status tracking.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item faq-item fade-up fade-up-delay-1">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed faq-btn" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#faq2">
+                                    Who can use Activity Hub?
+                                </button>
+                            </h2>
+                            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body faq-body">
+                                    Activity Hub supports three roles: <strong>Users</strong> who create and submit
+                                    activities, <strong>Lecturers</strong> who review and approve or reject submissions,
+                                    and <strong>Admins</strong> who manage companies, users, and oversee the entire
+                                    workflow.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item faq-item fade-up fade-up-delay-2">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed faq-btn" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#faq3">
+                                    How do I submit an activity?
+                                </button>
+                            </h2>
+                            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body faq-body">
+                                    After signing in, navigate to the Activities page and click <strong>"Create
+                                        Activity"</strong>. Fill in the title, description, rules, and tools. You can
+                                    also attach cropped images for visual reference. Once submitted, your activity
+                                    enters the review queue.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item faq-item fade-up fade-up-delay-3">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed faq-btn" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#faq4">
+                                    What happens if my activity is rejected?
+                                </button>
+                            </h2>
+                            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body faq-body">
+                                    If a Lecturer rejects your activity, you'll receive feedback explaining the reason.
+                                    You can then edit the activity based on the feedback and resubmit it for review. The
+                                    full history is tracked so you never lose context.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item faq-item fade-up fade-up-delay-4">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed faq-btn" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#faq5">
+                                    Is Activity Hub free to use?
+                                </button>
+                            </h2>
+                            <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body faq-body">
+                                    Yes! Activity Hub is free to get started. Simply create an account and begin
+                                    managing your organization's activities right away. No credit card required.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     {{-- CTA --}}
     <section class="cta-section">
         <div class="container">
