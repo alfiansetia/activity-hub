@@ -61,4 +61,20 @@ class Activity extends Model
     {
         return $this->hasMany(Attachment::class);
     }
+
+    // Status accessors
+    public function getIsPendingAttribute(): bool
+    {
+        return $this->status === 'pending';
+    }
+
+    public function getIsAcceptAttribute(): bool
+    {
+        return $this->status === 'accept';
+    }
+
+    public function getIsRejectAttribute(): bool
+    {
+        return $this->status === 'reject';
+    }
 }

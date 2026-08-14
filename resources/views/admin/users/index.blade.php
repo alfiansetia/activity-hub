@@ -100,9 +100,9 @@
                                     <span class="small">{{ $user->company->name ?? '-' }}</span>
                                 </td>
                                 <td>
-                                    @if ($user->company_status === 'accept')
+                                    @if ($user->company_is_accept)
                                         <span class="badge bg-success">Approved</span>
-                                    @elseif ($user->company_status === 'reject')
+                                    @elseif ($user->company_is_reject)
                                         <span class="badge bg-danger">Rejected</span>
                                     @else
                                         <span class="badge bg-warning text-dark">Pending</span>
@@ -117,7 +117,7 @@
                                         </button>
 
                                         {{-- Approve/Reject --}}
-                                        @if ($user->company_status === 'pending')
+                                        @if ($user->company_is_pending)
                                             <form method="POST" action="{{ route('admin.users.approve', $user) }}"
                                                 class="d-inline">
                                                 @csrf
@@ -207,19 +207,19 @@
                                                     <select name="company_status" class="form-select"
                                                         onchange="toggleRejectReason{{ $user->id }}(this.value)">
                                                         <option value="pending"
-                                                            {{ $user->company_status === 'pending' ? 'selected' : '' }}>
+                                                            {{ $user->company_is_pending ? 'selected' : '' }}>
                                                             Pending</option>
                                                         <option value="accept"
-                                                            {{ $user->company_status === 'accept' ? 'selected' : '' }}>
+                                                            {{ $user->company_is_accept ? 'selected' : '' }}>
                                                             Accepted</option>
                                                         <option value="reject"
-                                                            {{ $user->company_status === 'reject' ? 'selected' : '' }}>
+                                                            {{ $user->company_is_reject ? 'selected' : '' }}>
                                                             Rejected</option>
                                                     </select>
                                                 </div>
 
                                                 {{-- Reject Reason (conditional) --}}
-                                                <div class="mb-0 reject-reason-field {{ $user->company_status === 'reject' ? 'show' : '' }}"
+                                                <div class="mb-0 reject-reason-field {{ $user->company_is_reject ? 'show' : '' }}"
                                                     id="rejectReasonField{{ $user->id }}">
                                                     <label class="form-label fw-semibold">
                                                         Rejection Reason
@@ -253,7 +253,7 @@
                             </script>
 
                             {{-- Reject Modal (quick reject from table) --}}
-                            @if ($user->company_status === 'pending')
+                            @if ($user->company_is_pending)
                                 <div class="modal fade" id="rejectModal{{ $user->id }}" tabindex="-1">
                                     <div class="modal-dialog">
                                         <form method="POST" action="{{ route('admin.users.reject', $user) }}">

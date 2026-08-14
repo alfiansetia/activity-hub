@@ -126,7 +126,7 @@ class ActivityController extends Controller
     {
         $user = auth()->user();
 
-        if ($activity->status === 'accept') {
+        if ($activity->is_accept) {
             return back()->with('error', 'Accepted activities cannot be edited.');
         }
 
@@ -155,7 +155,7 @@ class ActivityController extends Controller
     {
         $user = auth()->user();
 
-        if ($activity->status === 'accept') {
+        if ($activity->is_accept) {
             return back()->with('error', 'Accepted activities cannot be edited.');
         }
 
@@ -187,7 +187,7 @@ class ActivityController extends Controller
         $validated['company_id'] = $validated['company_id'] ?? $activity->company_id;
 
         DB::transaction(function () use ($validated, $activity) {
-            $wasRejected = $activity->status === 'reject';
+            $wasRejected = $activity->is_reject;
 
             $activity->update([
                 'title'        => $validated['title'],
@@ -223,7 +223,7 @@ class ActivityController extends Controller
 
         if ($user->is_admin) {
             // Admin can delete any activity in any status
-        } elseif ($user->is_user && $activity->user_id === $user->id && $activity->status === 'pending') {
+        } elseif ($user->is_user && $activity->user_id === $user->id && $activity->is_pending) {
             // Owner can delete only their own pending activities
         } else {
             abort(403);

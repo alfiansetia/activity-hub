@@ -374,10 +374,10 @@
                                         style="color: var(--text-muted); font-size: 0.85rem;">
                                         {{ $activity->user->name ?? '-' }}</td>
                                     <td>
-                                        @if ($activity->status === 'accept')
+                                        @if ($activity->is_accept)
                                             <span class="badge badge-soft-success"><i
                                                     class="bi bi-check-circle me-1"></i>Accepted</span>
-                                        @elseif ($activity->status === 'reject')
+                                        @elseif ($activity->is_reject)
                                             <span class="badge badge-soft-danger"><i
                                                     class="bi bi-x-circle me-1"></i>Rejected</span>
                                         @else
@@ -396,7 +396,7 @@
                                                 <i class="bi bi-eye"></i>
                                             </a>
                                             @if (
-                                                $activity->status !== 'accept' &&
+                                                !$activity->is_accept &&
                                                     (auth()->user()->is_admin ||
                                                         $activity->user_id === auth()->id() ||
                                                         $activity->company_id === auth()->user()->company_id))

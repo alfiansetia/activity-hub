@@ -44,7 +44,7 @@
         <div class="ms-auto d-flex flex-wrap gap-2">
             {{-- Edit button --}}
             @if (
-                $activity->status !== 'accept' &&
+                !$activity->is_accept &&
                     (auth()->user()->is_admin ||
                         $activity->user_id === auth()->id() ||
                         $activity->company_id === auth()->user()->company_id))
@@ -54,7 +54,7 @@
             @endif
 
             {{-- Delete (admin: any status, owner: pending only) --}}
-            @if (auth()->user()->is_admin || ($activity->user_id === auth()->id() && $activity->status === 'pending'))
+            @if (auth()->user()->is_admin || ($activity->user_id === auth()->id() && $activity->is_pending))
                 <form method="POST" action="{{ route('activities.destroy', $activity) }}"
                     onsubmit="return confirm('Delete this activity?')" class="d-inline">
                     @csrf
@@ -66,7 +66,7 @@
             @endif
 
             {{-- Dosen: Accept / Reject --}}
-            @if (auth()->user()->is_dosen && $activity->status === 'pending')
+            @if (auth()->user()->is_dosen && $activity->is_pending)
                 <button type="button" class="btn btn-sm"
                     style="background: var(--success); color: #fff; font-weight: 600; box-shadow: 0 2px 8px rgba(34,197,94,0.3);"
                     data-bs-toggle="modal" data-bs-target="#acceptModal">
@@ -102,11 +102,11 @@
                 </div>
             </div>
             <div class="flex-shrink-0">
-                @if ($activity->status === 'accept')
+                @if ($activity->is_accept)
                     <span class="activity-status-badge success">
                         <i class="bi bi-check-circle-fill"></i> Accepted
                     </span>
-                @elseif ($activity->status === 'reject')
+                @elseif ($activity->is_reject)
                     <span class="activity-status-badge danger">
                         <i class="bi bi-x-circle-fill"></i> Rejected
                     </span>
@@ -224,7 +224,7 @@
         {{-- Sidebar --}}
         <div class="col-lg-4">
             {{-- Rejection Info --}}
-            @if ($activity->status === 'reject' && $activity->reject_reason)
+            @if ($activity->is_reject && $activity->reject_reason)
                 <div class="card mb-4 fade-up fade-up-delay-2 activity-alert-card danger">
                     <div class="card-body">
                         <div class="d-flex align-items-start gap-3">
@@ -250,7 +250,7 @@
             @endif
 
             {{-- Acceptance Info --}}
-            @if ($activity->status === 'accept')
+            @if ($activity->is_accept)
                 <div class="card mb-4 fade-up fade-up-delay-2 activity-alert-card success">
                     <div class="card-body">
                         <div class="d-flex align-items-start gap-3">
@@ -359,7 +359,7 @@
                             </div>
                         @endif
 
-                        @if ($activity->status === 'accept')
+                        @if ($activity->is_accept)
                             <div class="timeline-item">
                                 <div class="timeline-dot"
                                     style="background: var(--success); box-shadow: 0 0 0 3px rgba(34,197,94,0.2);"></div>
@@ -373,7 +373,7 @@
                                     </div>
                                 </div>
                             </div>
-                        @elseif ($activity->status === 'reject')
+                        @elseif ($activity->is_reject)
                             <div class="timeline-item">
                                 <div class="timeline-dot"
                                     style="background: var(--danger); box-shadow: 0 0 0 3px rgba(239,68,68,0.2);"></div>
@@ -415,7 +415,7 @@
     </div>
 
     {{-- Accept Modal --}}
-    @if (auth()->user()->is_dosen && $activity->status === 'pending')
+    @if (auth()->user()->is_dosen && $activity->is_pending)
         <div class="modal fade" id="acceptModal" tabindex="-1">
             <div class="modal-dialog">
                 <form method="POST" action="{{ route('activities.accept', $activity) }}">
@@ -455,7 +455,7 @@
     @endif
 
     {{-- Reject Modal --}}
-    @if (auth()->user()->is_dosen && $activity->status === 'pending')
+    @if (auth()->user()->is_dosen && $activity->is_pending)
         <div class="modal fade" id="rejectModal" tabindex="-1">
             <div class="modal-dialog">
                 <form method="POST" action="{{ route('activities.reject', $activity) }}">

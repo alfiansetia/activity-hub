@@ -12,11 +12,11 @@
         ],
     ])
 
-    @if ($activity->status === 'reject')
+    @if ($activity->is_reject)
         <span class="badge bg-danger mb-3">Previously Rejected</span>
     @endif
 
-    @if ($activity->status === 'reject' && $activity->reject_reason)
+    @if ($activity->is_reject && $activity->reject_reason)
         <div class="alert alert-danger border-0 shadow-sm">
             <i class="bi bi-exclamation-triangle me-2"></i>
             <strong>Rejection Reason:</strong> {{ $activity->reject_reason }}

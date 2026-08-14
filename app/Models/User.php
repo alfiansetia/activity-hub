@@ -72,4 +72,20 @@ class User extends Authenticatable
     {
         return $this->hasMany(Activity::class);
     }
+
+    // Company status accessors
+    public function getCompanyIsPendingAttribute(): bool
+    {
+        return $this->company_status === 'pending';
+    }
+
+    public function getCompanyIsAcceptAttribute(): bool
+    {
+        return $this->company_status === 'accept';
+    }
+
+    public function getCompanyIsRejectAttribute(): bool
+    {
+        return $this->company_status === 'reject';
+    }
 }

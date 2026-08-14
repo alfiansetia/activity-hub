@@ -49,9 +49,9 @@
     @endif
 
     {{-- Company Status Alert (pending/rejected) --}}
-    @if (auth()->user()->company_id && auth()->user()->company_status !== 'accept')
+    @if (auth()->user()->company_id && !auth()->user()->company_is_accept)
         <div class="fade-up mb-4">
-            @if (auth()->user()->company_status === 'reject')
+            @if (auth()->user()->company_is_reject)
                 <div class="alert d-flex align-items-start gap-3 mb-0" role="alert"
                     style="border-radius: 0.75rem; border: none; background: rgba(239,68,68,0.08); color: var(--danger);">
                     <div style="font-size: 1.25rem; line-height: 1;">
@@ -196,9 +196,9 @@
                                 <td class="fw-semibold">{{ $activity->title }}</td>
                                 <td style="color: var(--text-muted);">{{ $activity->company->name ?? '-' }}</td>
                                 <td>
-                                    @if ($activity->status === 'accept')
+                                    @if ($activity->is_accept)
                                         <span class="badge badge-soft-success">Accepted</span>
-                                    @elseif($activity->status === 'reject')
+                                    @elseif($activity->is_reject)
                                         <span class="badge badge-soft-danger">Rejected</span>
                                     @else
                                         <span class="badge badge-soft-warning">Pending</span>

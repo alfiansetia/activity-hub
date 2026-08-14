@@ -48,9 +48,9 @@
     @endif
 
     {{-- Company Status Alert (pending/rejected) --}}
-    @if ($user->company_id && $user->company_status !== 'accept')
+    @if ($user->company_id && !$user->company_is_accept)
         <div class="fade-up mb-4">
-            @if ($user->company_status === 'reject')
+            @if ($user->company_is_reject)
                 <div class="alert d-flex align-items-start gap-3 mb-0" role="alert"
                     style="border-radius: 0.75rem; border: none; background: rgba(239,68,68,0.08); color: var(--danger);">
                     <div style="font-size: 1.25rem; line-height: 1;">
@@ -165,10 +165,10 @@
                     <div class="profile-info-row">
                         <span class="profile-info-label">Status</span>
                         <span>
-                            @if ($user->company_status === 'accept')
+                            @if ($user->company_is_accept)
                                 <span class="badge badge-soft-success"><i
                                         class="bi bi-check-circle me-1"></i>Approved</span>
-                            @elseif ($user->company_status === 'reject')
+                            @elseif ($user->company_is_reject)
                                 <span class="badge badge-soft-danger"><i class="bi bi-x-circle me-1"></i>Rejected</span>
                             @else
                                 <span class="badge badge-soft-warning"><i
@@ -178,7 +178,7 @@
                     </div>
 
                     {{-- Approved Details --}}
-                    @if ($user->company_status === 'accept' && $user->company)
+                    @if ($user->company_is_accept && $user->company)
                         @if ($user->company_accept_at)
                             <div class="profile-info-row">
                                 <span class="profile-info-label">Approved At</span>
@@ -195,7 +195,7 @@
                     @endif
 
                     {{-- Rejected Details --}}
-                    @if ($user->company_status === 'reject' && $user->company)
+                    @if ($user->company_is_reject && $user->company)
                         @if ($user->company_reject_reason)
                             <div class="profile-info-row">
                                 <span class="profile-info-label">Reject Reason</span>
