@@ -109,8 +109,9 @@
                                 pending.
                             </p>
                             <form method="POST" action="{{ route('profile.company-request') }}"
-                                class="d-flex gap-2 align-items-end">
+                                class="d-flex flex-column flex-md-row gap-2 align-items-stretch align-items-md-end">
                                 @csrf
+
                                 <div class="flex-grow-1" style="max-width: 350px;">
                                     <select name="company_id" class="form-select @error('company_id') is-invalid @enderror"
                                         required>
@@ -122,10 +123,12 @@
                                             </option>
                                         @endforeach
                                     </select>
+
                                     @error('company_id')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
+
                                 <button type="submit" class="btn btn-outline-primary text-nowrap">
                                     <i class="bi bi-arrow-repeat me-1"></i> Request Change
                                 </button>
