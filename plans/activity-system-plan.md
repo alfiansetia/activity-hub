@@ -10,8 +10,8 @@ The **Activity Management System** is a PHP/MySQL web application for managing c
 
 - **Backend**: PHP 8.3+ / Laravel 13.x (Eloquent ORM)
 - **Database**: MySQL (via Laravel database migrations & Eloquent)
-- **Frontend**: HTML5, CSS3, Tailwind CSS 4 + Vite 8
-- **Build Tool**: Vite with `laravel-vite-plugin`
+- **Frontend**: HTML5, CSS3, Bootstrap 5.3 (CDN) + Bootstrap Icons
+- **Build Tool**: Vite with `laravel-vite-plugin` (custom CSS/JS only)
 - **Image Processing**: Cropper.js (CDN) for client-side multi-image cropping & preview
 - **Authentication**: Laravel built-in Auth (session-based)
 
@@ -197,11 +197,21 @@ activity-hub/
 │   └── index.php              # Application entry point
 ├── resources/
 │   ├── css/
-│   │   └── app.css            # Tailwind CSS entry
+│   │   └── app.css            # Custom CSS (sidebar, cards, hero)
 │   ├── js/
-│   │   └── app.js             # JS entry point
+│   │   └── app.js             # Sidebar toggle JS
 │   └── views/
-│       └── welcome.blade.php  # Blade templates
+│       ├── welcome.blade.php  # Landing page
+│       ├── dashboard.blade.php # Dashboard page
+│       ├── auth/
+│       │   ├── login.blade.php
+│       │   └── register.blade.php
+│       ├── layouts/
+│       │   ├── app.blade.php  # Authenticated layout (sidebar + navbar)
+│       │   └── guest.blade.php # Guest layout (centered card)
+│       └── partials/
+│           ├── sidebar.blade.php
+│           └── navbar.blade.php
 ├── routes/
 │   ├── web.php                # Web routes
 │   └── console.php            # Artisan commands
@@ -209,7 +219,7 @@ activity-hub/
 ├── tests/                     # PHPUnit tests
 ├── artisan                    # CLI entry point
 ├── composer.json              # PHP dependencies
-├── package.json               # Node dependencies (Tailwind, Vite)
+├── package.json               # Node dependencies (Vite)
 ├── vite.config.js             # Vite build configuration
 └── phpunit.xml                # Test configuration
 ```

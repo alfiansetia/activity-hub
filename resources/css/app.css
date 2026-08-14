@@ -1,9 +1,151 @@
-@import 'tailwindcss';
+/* Layout */
+body {
+    min-height: 100vh;
+    background-color: #f8f9fa;
+    overflow-x: hidden;
+}
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
+/* Sidebar */
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transition:
+        left 0.3s ease,
+        margin-left 0.3s ease;
+    z-index: 1050;
+    background-color: #fff;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.05);
+    overflow-y: auto;
+}
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+.sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 1040;
+}
+
+/* Main content */
+.main-content {
+    min-height: 100vh;
+    transition: margin-left 0.3s ease;
+}
+
+/* Navbar */
+.navbar {
+    z-index: 1030;
+}
+
+/* ---- Desktop (>= 992px) ---- */
+@media (min-width: 992px) {
+    .main-content {
+        margin-left: 260px;
+    }
+
+    /* Collapsed state on desktop */
+    body.sidebar-collapsed .sidebar {
+        left: -260px;
+    }
+
+    body.sidebar-collapsed .main-content {
+        margin-left: 0;
+    }
+}
+
+/* ---- Mobile (< 992px) ---- */
+@media (max-width: 991.98px) {
+    .sidebar {
+        left: -260px;
+    }
+
+    .sidebar.show {
+        left: 0;
+    }
+
+    .sidebar-backdrop.show {
+        display: block;
+    }
+
+    body.sidebar-open {
+        overflow: hidden;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+    }
+}
+
+/* Sidebar nav items */
+.sidebar .nav-link {
+    color: #495057;
+    border-radius: 0.5rem;
+    padding: 0.6rem 1rem;
+    margin: 0.15rem 0.75rem;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    background-color: #e9ecef;
+    color: #0d6efd;
+}
+
+.sidebar .nav-link.active {
+    font-weight: 600;
+}
+
+/* Stat cards */
+.card-stat {
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    transition: transform 0.15s ease;
+}
+
+.card-stat:hover {
+    transform: translateY(-2px);
+}
+
+/* Cropper modal fixes */
+#cropperModal .modal-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+}
+
+#cropperModal .cropper-container {
+    max-width: 100% !important;
+}
+
+/* Landing hero */
+.hero-section {
+    background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);
+    color: #fff;
+    padding: 5rem 0;
+}
+
+@media (max-width: 767.98px) {
+    .hero-section {
+        padding: 3rem 0;
+    }
+}
+
+/* Feature cards */
+.feature-card {
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.08);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.12);
 }
