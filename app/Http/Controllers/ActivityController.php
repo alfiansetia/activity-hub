@@ -107,6 +107,9 @@ class ActivityController extends Controller
             'descriptions' => ['nullable', 'string', 'max:65535'],
             'rules'        => ['nullable', 'string', 'max:65535'],
             'tools'        => ['nullable', 'string', 'max:65535'],
+            'additional_location' => ['nullable', 'string', 'max:255'],
+            'tests'        => ['nullable', 'string', 'max:65535'],
+            'ulasan'       => ['nullable', 'string', 'max:65535'],
             'company_id'   => ['nullable', 'exists:companies,id'],
             'images'       => ['nullable', 'array'],
             'images.*'     => ['string'], // base64
@@ -120,14 +123,17 @@ class ActivityController extends Controller
 
         DB::transaction(function () use ($validated) {
             $activity = Activity::create([
-                'title'        => $validated['title'],
-                'date'         => $validated['date'],
-                'descriptions' => $validated['descriptions'] ?? null,
-                'rules'        => $validated['rules'] ?? null,
-                'tools'        => $validated['tools'] ?? null,
-                'company_id'   => $validated['company_id'],
-                'user_id'      => auth()->id(),
-                'status'       => 'pending',
+                'title'              => $validated['title'],
+                'date'               => $validated['date'],
+                'descriptions'       => $validated['descriptions'] ?? null,
+                'rules'              => $validated['rules'] ?? null,
+                'tools'              => $validated['tools'] ?? null,
+                'additional_location' => $validated['additional_location'] ?? null,
+                'tests'              => $validated['tests'] ?? null,
+                'ulasan'             => $validated['ulasan'] ?? null,
+                'company_id'         => $validated['company_id'],
+                'user_id'            => auth()->id(),
+                'status'             => 'pending',
             ]);
 
             $this->saveAttachments($activity, $validated['images'] ?? [], $validated['captions'] ?? []);
@@ -201,6 +207,9 @@ class ActivityController extends Controller
             'descriptions' => ['nullable', 'string', 'max:65535'],
             'rules'        => ['nullable', 'string', 'max:65535'],
             'tools'        => ['nullable', 'string', 'max:65535'],
+            'additional_location' => ['nullable', 'string', 'max:255'],
+            'tests'        => ['nullable', 'string', 'max:65535'],
+            'ulasan'       => ['nullable', 'string', 'max:65535'],
             'company_id'   => ['nullable', 'exists:companies,id'],
             'images'       => ['nullable', 'array'],
             'images.*'     => ['string'],
@@ -217,16 +226,19 @@ class ActivityController extends Controller
             $wasRejected = $activity->is_reject;
 
             $activity->update([
-                'title'        => $validated['title'],
-                'descriptions' => $validated['descriptions'] ?? null,
-                'rules'        => $validated['rules'] ?? null,
-                'tools'        => $validated['tools'] ?? null,
-                'company_id'   => $validated['company_id'],
-                'status'       => 'pending',
-                'reject_by'    => null,
-                'reject_reason' => null,
-                'reject_at'    => null,
-                're_submit_at' => $wasRejected ? now() : null,
+                'title'              => $validated['title'],
+                'descriptions'       => $validated['descriptions'] ?? null,
+                'rules'              => $validated['rules'] ?? null,
+                'tools'              => $validated['tools'] ?? null,
+                'additional_location' => $validated['additional_location'] ?? null,
+                'tests'              => $validated['tests'] ?? null,
+                'ulasan'             => $validated['ulasan'] ?? null,
+                'company_id'         => $validated['company_id'],
+                'status'             => 'pending',
+                'reject_by'          => null,
+                'reject_reason'      => null,
+                'reject_at'          => null,
+                're_submit_at'       => $wasRejected ? now() : null,
             ]);
 
             // Delete selected attachments

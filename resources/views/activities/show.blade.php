@@ -171,6 +171,48 @@
                 </div>
             @endif
 
+            {{-- Additional Location --}}
+            @if ($activity->additional_location)
+                <div class="card mb-4 fade-up fade-up-delay-3">
+                    <div class="card-header">
+                        <h6 class="mb-0 fw-bold">
+                            <i class="bi bi-geo-alt me-2" style="color: var(--danger);"></i> Additional Location
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="detail-content">{{ $activity->additional_location }}</div>
+                    </div>
+                </div>
+            @endif
+
+            {{-- Tests --}}
+            @if ($activity->tests)
+                <div class="card mb-4 fade-up fade-up-delay-3">
+                    <div class="card-header">
+                        <h6 class="mb-0 fw-bold">
+                            <i class="bi bi-clipboard-check me-2" style="color: var(--success);"></i> Tests
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="detail-content">{{ $activity->tests }}</div>
+                    </div>
+                </div>
+            @endif
+
+            {{-- Ulasan --}}
+            @if ($activity->ulasan)
+                <div class="card mb-4 fade-up fade-up-delay-3">
+                    <div class="card-header">
+                        <h6 class="mb-0 fw-bold">
+                            <i class="bi bi-chat-text me-2" style="color: var(--primary);"></i> Ulasan
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="detail-content">{{ $activity->ulasan }}</div>
+                    </div>
+                </div>
+            @endif
+
             {{-- Attachments --}}
             @if ($activity->attachments->count())
                 <div class="card fade-up fade-up-delay-3">
@@ -217,7 +259,8 @@
                                 <h6 class="modal-title" style="color: #fff; font-size: 0.9rem;">
                                     <i class="bi bi-image me-2"></i>{{ $att->caption ?: 'Attachment' }}
                                 </h6>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                <button type="button" class="btn-close btn-close-white"
+                                    data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body lightbox-body">
                                 <img src="{{ Storage::url($att->image_url) }}" alt="">

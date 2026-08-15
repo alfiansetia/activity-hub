@@ -14,20 +14,23 @@ class ActivityFactory extends Factory
     public function definition(): array
     {
         return [
-            'date'         => fake('id_ID')->dateTimeBetween('-30 days', 'now'),
-            'title'        => fake('id_ID')->sentence(3),
-            'descriptions' => fake('id_ID')->paragraph(),
-            'rules'        => fake('id_ID')->optional(0.6)->sentence(),
-            'tools'        => fake('id_ID')->optional(0.5)->words(3, true),
-            'user_id'      => User::factory(),
-            'company_id'   => Company::factory(),
-            'status'       => 'pending',
-            'accept_by'    => null,
-            'reject_by'    => null,
-            'reject_reason' => null,
-            'reject_at'    => null,
-            'accept_at'    => null,
-            're_submit_at' => null,
+            'date'               => fake('id_ID')->dateTimeBetween('-30 days', 'now'),
+            'title'              => fake('id_ID')->sentence(3),
+            'descriptions'       => fake('id_ID')->paragraph(),
+            'rules'              => fake('id_ID')->optional(0.6)->sentence(),
+            'tools'              => fake('id_ID')->optional(0.5)->words(3, true),
+            'additional_location' => fake('id_ID')->optional(0.4)->city() . ' Office',
+            'tests'              => fake('id_ID')->optional(0.5)->sentences(2, true),
+            'ulasan'             => fake('id_ID')->optional(0.4)->sentences(2, true),
+            'user_id'            => User::factory(),
+            'company_id'         => Company::factory(),
+            'status'             => 'pending',
+            'accept_by'          => null,
+            'reject_by'          => null,
+            'reject_reason'      => null,
+            'reject_at'          => null,
+            'accept_at'          => null,
+            're_submit_at'       => null,
         ];
     }
 

@@ -35,7 +35,7 @@
 
                     {{-- Company --}}
                     @if (auth()->user()->is_admin)
-                        <div class="col-12">
+                        <div class="col-md-6">
                             <label for="company_id" class="form-label fw-semibold">Company <span
                                     class="text-danger">*</span></label>
                             <select id="company_id" name="company_id"
@@ -53,7 +53,7 @@
                             @enderror
                         </div>
                     @else
-                        <div class="col-12">
+                        <div class="col-md-6">
                             <label class="form-label fw-semibold">Company</label>
                             <input type="hidden" name="company_id" value="{{ $defaultCompanyId }}">
                             <input type="text" class="form-control" value="{{ $companies->first()?->name }}" readonly
@@ -61,6 +61,17 @@
                             <small class="text-muted">Company is automatically set from your account.</small>
                         </div>
                     @endif
+
+                    {{-- Additional Location --}}
+                    <div class="col-md-6">
+                        <label for="additional_location" class="form-label fw-semibold">Additional Location</label>
+                        <input type="text" id="additional_location" name="additional_location"
+                            class="form-control @error('additional_location') is-invalid @enderror"
+                            value="{{ old('additional_location') }}" placeholder="e.g. Meeting room, Lab, etc.">
+                        @error('additional_location')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
 
                     {{-- Description --}}
                     <div class="col-12">
@@ -91,6 +102,26 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+
+                    {{-- Tests --}}
+                    <div class="col-md-6">
+                        <label for="tests" class="form-label fw-semibold">Tests</label>
+                        <textarea id="tests" name="tests" class="form-control @error('tests') is-invalid @enderror" rows="3"
+                            placeholder="Describe the tests or criteria...">{{ old('tests') }}</textarea>
+                        @error('tests')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    {{-- Ulasan --}}
+                    <div class="col-md-6">
+                        <label for="ulasan" class="form-label fw-semibold">Ulasan</label>
+                        <textarea id="ulasan" name="ulasan" class="form-control @error('ulasan') is-invalid @enderror" rows="3"
+                            placeholder="Tulis ulasan atau review kegiatan...">{{ old('ulasan') }}</textarea>
+                        @error('ulasan')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
             </div>
         </div>
@@ -99,9 +130,14 @@
         <div class="card border-0 shadow-sm mb-4">
             <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
                 <h6 class="mb-0 fw-semibold"><i class="bi bi-images me-2 text-primary"></i> Attachments</h6>
-                <button type="button" class="btn btn-sm btn-primary" id="addAttachmentBtn">
-                    <i class="bi bi-plus-lg me-1"></i> Add Image
-                </button>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-success" id="cameraBtn">
+                        <i class="bi bi-camera-fill me-1"></i> Take Photo
+                    </button>
+                    <button type="button" class="btn btn-sm btn-primary" id="addAttachmentBtn">
+                        <i class="bi bi-plus-lg me-1"></i> Add Image
+                    </button>
+                </div>
             </div>
             <div class="card-body">
                 {{-- Drop Zone --}}
@@ -159,6 +195,40 @@
                         </button>
                         <button type="button" class="btn btn-primary" id="cropperApply">
                             <i class="bi bi-check-lg me-1"></i> Apply Crop
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Camera Modal --}}
+    <div class="modal fade" id="cameraModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow overflow-hidden">
+                <div class="modal-header bg-dark text-white border-0 py-2">
+                    <h6 class="modal-title"><i class="bi bi-camera-fill me-2"></i> Take Photo</h6>
+                    <button type="button" class="btn-close btn-close-white" id="cameraClose"></button>
+                </div>
+                <div class="modal-body p-0 bg-dark position-relative" style="height: 60vh;">
+                    <video id="cameraVideo" autoplay playsinline
+                        style="width: 100%; height: 100%; object-fit: cover; display: block;"></video>
+                    <canvas id="cameraCanvas" style="display: none;"></canvas>
+                    <div id="cameraLoading" class="position-absolute top-50 start-50 translate-middle text-white">
+                        <div class="spinner-border" role="status"></div>
+                        <p class="mt-2 mb-0 small">Starting camera...</p>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light flex-wrap gap-2">
+                    <button type="button" class="btn btn-outline-light" id="switchCameraBtn" title="Switch Camera">
+                        <i class="bi bi-arrow-repeat me-1"></i> Switch Camera
+                    </button>
+                    <div class="ms-auto d-flex gap-2">
+                        <button type="button" class="btn btn-outline-secondary" id="cameraCancel">
+                            <i class="bi bi-x-lg me-1"></i> Cancel
+                        </button>
+                        <button type="button" class="btn btn-primary" id="cameraCapture">
+                            <i class="bi bi-camera-fill me-1"></i> Capture
                         </button>
                     </div>
                 </div>
@@ -239,6 +309,16 @@
 
         .attachment-card:hover .btn-recrop {
             opacity: 1;
+        }
+
+        #switchCameraBtn {
+            border-color: rgba(255, 255, 255, 0.5);
+            color: #fff;
+        }
+
+        #switchCameraBtn:hover {
+            border-color: #fff;
+            background-color: rgba(255, 255, 255, 0.15);
         }
     </style>
 @endpush
@@ -405,6 +485,185 @@
                     if (!container.children.length) noMsg.classList.remove('d-none');
                 });
             }
+
+            // ===== Camera Capture =====
+            const cameraModalEl = document.getElementById('cameraModal');
+            const cameraModal = new bootstrap.Modal(cameraModalEl);
+            const cameraVideo = document.getElementById('cameraVideo');
+            const cameraCanvas = document.getElementById('cameraCanvas');
+            const cameraLoading = document.getElementById('cameraLoading');
+            let cameraStream = null;
+            let facingMode = 'environment'; // Start with rear camera
+
+            function startCamera() {
+                // Stop any existing stream
+                if (cameraStream) {
+                    cameraStream.getTracks().forEach(t => t.stop());
+                }
+                cameraLoading.style.display = 'block';
+                cameraVideo.style.display = 'block';
+
+                // Polyfill navigator.mediaDevices for non-secure contexts
+                if (navigator.mediaDevices === undefined) {
+                    navigator.mediaDevices = {};
+                }
+                if (navigator.mediaDevices.getUserMedia === undefined) {
+                    navigator.mediaDevices.getUserMedia = function(constraints) {
+                        var getUserMedia = navigator.getUserMedia ||
+                            navigator.webkitGetUserMedia ||
+                            navigator.mozGetUserMedia;
+                        if (!getUserMedia) {
+                            return Promise.reject(new Error(
+                                'getUserMedia is not supported in this browser or requires HTTPS.'));
+                        }
+                        return new Promise(function(resolve, reject) {
+                            getUserMedia.call(navigator, constraints, resolve, reject);
+                        });
+                    };
+                }
+
+                const constraints = {
+                    video: {
+                        facingMode: facingMode,
+                        width: {
+                            ideal: 1920
+                        },
+                        height: {
+                            ideal: 1080
+                        }
+                    },
+                    audio: false
+                };
+
+                navigator.mediaDevices.getUserMedia(constraints)
+                    .then(stream => {
+                        cameraStream = stream;
+                        cameraVideo.srcObject = stream;
+                        cameraVideo.onloadedmetadata = () => {
+                            cameraVideo.play();
+                            cameraLoading.style.display = 'none';
+                        };
+                    })
+                    .catch(err => {
+                        console.error('Camera error:', err);
+                        let msg = 'Cannot access camera. Please allow camera permission.';
+                        if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location
+                            .hostname !== '127.0.0.1') {
+                            msg =
+                                'Camera requires HTTPS or localhost. Please access this page via <strong>https://</strong> or <strong>localhost</strong>.';
+                        }
+                        cameraLoading.innerHTML =
+                            '<i class="bi bi-camera-video-off fs-1"></i><p class="mt-2 mb-0">' + msg + '</p>';
+                    });
+            }
+
+            function stopCamera() {
+                if (cameraStream) {
+                    cameraStream.getTracks().forEach(t => t.stop());
+                    cameraStream = null;
+                }
+                cameraVideo.srcObject = null;
+            }
+
+            // Helper: show alert above attachments card
+            function showCameraAlert(message) {
+                // Remove any existing camera alert
+                const existing = document.getElementById('cameraAlert');
+                if (existing) existing.remove();
+
+                const alert = document.createElement('div');
+                alert.id = 'cameraAlert';
+                alert.className = 'alert alert-warning alert-dismissible fade show shadow-sm';
+                alert.setAttribute('role', 'alert');
+                alert.innerHTML =
+                    '<i class="bi bi-exclamation-triangle-fill me-2"></i>' + message +
+                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+
+                // Insert before the attachments card
+                const attachmentsCard = document.getElementById('dropZone').closest('.card');
+                attachmentsCard.parentNode.insertBefore(alert, attachmentsCard);
+
+                // Auto-dismiss after 8 seconds
+                setTimeout(() => {
+                    if (alert.parentNode) alert.remove();
+                }, 8000);
+            }
+
+            // Open camera modal
+            document.getElementById('cameraBtn').addEventListener('click', () => {
+                // Check if camera API is available
+                var hasMediaDevices = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+                var hasLegacyGetUserMedia = !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
+                    navigator.mozGetUserMedia);
+
+                if (!hasMediaDevices && !hasLegacyGetUserMedia) {
+                    let msg = 'Camera is not supported in this browser.';
+                    if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location
+                        .hostname !== '127.0.0.1') {
+                        msg =
+                            'Camera requires <strong>HTTPS</strong> or <strong>localhost</strong>. Please access via https:// or enable SSL in Laragon.';
+                    }
+                    showCameraAlert(msg);
+                    return;
+                }
+
+                facingMode = 'environment';
+                cameraModal.show();
+                startCamera();
+            });
+
+            // Switch camera (front / rear)
+            document.getElementById('switchCameraBtn').addEventListener('click', () => {
+                facingMode = (facingMode === 'environment') ? 'user' : 'environment';
+                startCamera();
+            });
+
+            // Capture photo
+            document.getElementById('cameraCapture').addEventListener('click', () => {
+                if (!cameraStream) return;
+
+                const vw = cameraVideo.videoWidth;
+                const vh = cameraVideo.videoHeight;
+                cameraCanvas.width = vw;
+                cameraCanvas.height = vh;
+                const ctx = cameraCanvas.getContext('2d');
+
+                // If using front camera, mirror the capture
+                if (facingMode === 'user') {
+                    ctx.translate(vw, 0);
+                    ctx.scale(-1, 1);
+                }
+
+                ctx.drawImage(cameraVideo, 0, 0, vw, vh);
+
+                const base64 = cameraCanvas.toDataURL('image/jpeg', 0.92);
+
+                // Stop camera and close camera modal
+                stopCamera();
+                cameraModal.hide();
+
+                // Open cropper with captured image
+                currentSlot = slotIndex++;
+                pendingSrc = base64;
+                cropperImg.src = base64;
+                cropperModal.show();
+            });
+
+            // Cancel / Close camera
+            ['cameraCancel', 'cameraClose'].forEach(id => {
+                document.getElementById(id).addEventListener('click', () => {
+                    stopCamera();
+                    cameraModal.hide();
+                });
+            });
+
+            // Ensure camera stops if modal is closed by other means
+            cameraModalEl.addEventListener('hidden.bs.modal', () => {
+                stopCamera();
+            });
+
+            // Stop camera stream when page is about to unload
+            window.addEventListener('beforeunload', stopCamera);
         });
     </script>
 @endpush

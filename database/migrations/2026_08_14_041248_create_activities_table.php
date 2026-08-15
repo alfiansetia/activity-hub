@@ -28,6 +28,9 @@ return new class extends Migration
             $table->timestamp('reject_at')->nullable();
             $table->timestamp('accept_at')->nullable();
             $table->timestamp('re_submit_at')->nullable();
+            $table->string('additional_location')->nullable();
+            $table->text('tests')->nullable();
+            $table->text('ulasan')->nullable();
             $table->timestamps();
         });
     }
