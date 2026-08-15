@@ -6,9 +6,50 @@ use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
+    public function create()
+    {
+        $companies = Company::orderBy('name')->get();
+
+        return view('admin.users.create', compact('companies'));
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name'           => ['required', 'string', 'max:255'],
+            'email'          => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'password'       => ['required', 'string', 'min:8', 'confirmed'],
+            'role'           => ['required', 'string', 'in:admin,dosen,user'],
+            'company_id'     => ['nullable', 'exists:companies,id'],
+            'company_status' => ['required', 'string', 'in:pending,accept,reject,none'],
+        ]);
+
+        $user = User::create([
+            'name'           => $validated['name'],
+            'email'          => $validated['email'],
+            'password'       => Hash::make($validated['password']),
+            'role'           => $validated['role'],
+            'company_id'     => $validated['company_id'],
+            'company_status' => $validated['company_status'],
+        ]);
+
+        // Handle accept status timestamps
+        if ($validated['company_status'] === 'accept') {
+            $user->update([
+                'company_accept_at' => now(),
+                'company_accept_by' => auth()->id(),
+            ]);
+        }
+
+        return redirect()->route('admin.users.index')
+            ->with('success', "User {$user->name} created successfully.");
+    }
+
     public function index(Request $request)
     {
         $users = User::with('company')

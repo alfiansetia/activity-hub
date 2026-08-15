@@ -57,6 +57,8 @@ Route::middleware('auth')->group(function () {
     Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
         // Users
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+        Route::post('/users', [UserController::class, 'store'])->name('users.store');
         Route::post('/users/{user}/approve', [UserController::class, 'approve'])->name('users.approve');
         Route::post('/users/{user}/reject', [UserController::class, 'reject'])->name('users.reject');
         Route::patch('/users/{user}/role', [UserController::class, 'updateRole'])->name('users.updateRole');
