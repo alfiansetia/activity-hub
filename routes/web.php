@@ -49,6 +49,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/{activity}/edit', [ActivityController::class, 'edit'])->name('edit');
         Route::put('/{activity}', [ActivityController::class, 'update'])->name('update');
         Route::delete('/{activity}', [ActivityController::class, 'destroy'])->name('destroy');
+        Route::get('/{activity}/pdf', [ActivityController::class, 'downloadPdf'])->name('pdf');
+        Route::get('/{activity}/preview', [ActivityController::class, 'previewPdf'])->name('preview');
         Route::post('/{activity}/accept', [ActivityController::class, 'accept'])->name('accept');
         Route::post('/{activity}/reject', [ActivityController::class, 'reject'])->name('reject');
     });

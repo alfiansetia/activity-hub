@@ -49,6 +49,16 @@
     {{-- Actions Bar --}}
     <div class="d-flex flex-wrap align-items-center gap-2 mb-4 fade-up">
         <div class="ms-auto d-flex flex-wrap gap-2">
+            {{-- Preview HTML button --}}
+            <a href="{{ route('activities.preview', $activity) }}" class="btn btn-outline-info btn-sm" target="_blank">
+                <i class="bi bi-eye me-1"></i> Preview Report
+            </a>
+
+            {{-- Download PDF button --}}
+            <a href="{{ route('activities.pdf', $activity) }}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-file-earmark-pdf me-1"></i> Download PDF
+            </a>
+
             {{-- Edit button --}}
             @if (
                 !$activity->is_accept &&

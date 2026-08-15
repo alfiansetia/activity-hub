@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Activity;
 use App\Models\Attachment;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -254,6 +255,61 @@ class ActivityController extends Controller
         });
 
         return redirect()->route('activities.show', $activity)->with('success', 'Activity updated and resubmitted for review.');
+    }
+
+    private function prepareReportData(Activity $activity): array
+    {
+        $activity->load(['user', 'company', 'attachments', 'acceptor', 'rejector']);
+
+        $dayNames = [
+            0 => 'Ahad',
+            1 => 'Isnin',
+            2 => 'Selasa',
+            3 => 'Rabu',
+            4 => 'Khamis',
+            5 => 'Jumaat',
+            6 => 'Sabtu',
+        ];
+
+        $dayName = $dayNames[$activity->date?->dayOfWeek ?? 0];
+
+        return compact('activity', 'dayName');
+    }
+
+    public function previewPdf(Activity $activity)
+    {
+        $user = auth()->user();
+
+        if ($user->is_user && $activity->company_id !== $user->company_id) {
+            abort(403);
+        }
+
+        $data = $this->prepareReportData($activity);
+
+        return view('activities.pdf', $data);
+    }
+
+    public function downloadPdf(Activity $activity)
+    {
+        $user = auth()->user();
+
+        // User can only download activities from their own company
+        if ($user->is_user && $activity->company_id !== $user->company_id) {
+            abort(403);
+        }
+
+        $data = $this->prepareReportData($activity);
+
+        $pdf = Pdf::loadView('activities.pdf', $data)
+            ->setPaper('a4', 'portrait')
+            ->setOptions([
+                'isRemoteEnabled' => false,
+                'isHtml5ParserEnabled' => true,
+            ]);
+
+        $filename = 'Laporan_Harian_' . Str::slug($activity->title) . '_' . $activity->date?->format('Y-m-d') . '.pdf';
+
+        return $pdf->download($filename);
     }
 
     public function destroy(Activity $activity)
