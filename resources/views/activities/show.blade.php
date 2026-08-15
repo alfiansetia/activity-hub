@@ -5,7 +5,7 @@
 @section('content')
     {{-- Breadcrumb --}}
     @if (auth()->user()->is_dosen)
-        {{-- Dosen: always show company level (Dashboard → Activities → Company → Title) --}}
+        {{-- Dosen: Dashboard → Activities → Company → User → Title --}}
         @include('partials.breadcrumb', [
             'breadcrumbs' => [
                 ['label' => 'Dashboard', 'url' => route('dashboard'), 'icon' => 'bi bi-house-door'],
@@ -13,6 +13,13 @@
                 [
                     'label' => $activity->company->name ?? 'Company',
                     'url' => route('activities.index', ['company_id' => $activity->company_id]),
+                ],
+                [
+                    'label' => $activity->user->name ?? 'Student',
+                    'url' => route('activities.index', [
+                        'company_id' => $activity->company_id,
+                        'user_id' => $activity->user_id,
+                    ]),
                 ],
                 ['label' => Str::limit($activity->title, 30)],
             ],

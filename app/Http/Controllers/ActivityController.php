@@ -15,6 +15,7 @@ class ActivityController extends Controller
     {
         $user = auth()->user();
         $selectedCompanyId = $request->company_id;
+        $selectedUserId = $request->user_id;
 
         // Dosen: show company selection when no company filter
         if ($user->is_dosen && !$selectedCompanyId) {
@@ -28,9 +29,34 @@ class ActivityController extends Controller
             return view('activities.index', compact('companies'));
         }
 
+        // Dosen: show users in selected company when no user filter
+        if ($user->is_dosen && $selectedCompanyId && !$selectedUserId) {
+            $selectedCompany = \App\Models\Company::find($selectedCompanyId);
+            if (!$selectedCompany) {
+                abort(404);
+            }
+
+            $companyUsers = \App\Models\User::where('company_id', $selectedCompanyId)
+                ->where('role', 'user')
+                ->where('company_status', 'accept')
+                ->withCount([
+                    'activities',
+                    'activities as pending_count' => fn($q) => $q->where('status', 'pending'),
+                    'activities as accept_count' => fn($q) => $q->where('status', 'accept'),
+                    'activities as reject_count' => fn($q) => $q->where('status', 'reject'),
+                ])
+                ->when($request->search, fn($q) => $q->where('name', 'like', "%{$request->search}%"))
+                ->orderBy('name')
+                ->paginate(12)
+                ->withQueryString();
+
+            return view('activities.index', compact('selectedCompany', 'companyUsers'));
+        }
+
         $activities = Activity::with(['user', 'company'])
             ->when($user->is_user, fn($q) => $q->where('company_id', $user->company_id))
             ->when($selectedCompanyId, fn($q) => $q->where('company_id', $selectedCompanyId))
+            ->when($selectedUserId, fn($q) => $q->where('user_id', $selectedUserId))
             ->when($request->status, fn($q) => $q->where('status', $request->status))
             ->when($request->search, fn($q) => $q->where('title', 'like', "%{$request->search}%"))
             ->latest()
@@ -38,8 +64,9 @@ class ActivityController extends Controller
             ->withQueryString();
 
         $selectedCompany = $selectedCompanyId ? \App\Models\Company::find($selectedCompanyId) : null;
+        $selectedUser = $selectedUserId ? \App\Models\User::find($selectedUserId) : null;
 
-        return view('activities.index', compact('activities', 'selectedCompany'));
+        return view('activities.index', compact('activities', 'selectedCompany', 'selectedUser'));
     }
 
     public function create()
