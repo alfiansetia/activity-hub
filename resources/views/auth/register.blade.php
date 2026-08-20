@@ -46,7 +46,7 @@
             </div>
 
             {{-- Confirm Password --}}
-            <div class="mb-4">
+            <div class="mb-3">
                 <label for="password_confirmation" class="form-label">Confirm Password</label>
                 <div class="input-group-password">
                     <input type="password" class="form-control" id="password_confirmation" name="password_confirmation"
@@ -54,6 +54,25 @@
                     <button type="button" class="password-toggle" onclick="togglePassword('password_confirmation', this)">
                         <i class="bi bi-eye"></i>
                     </button>
+                </div>
+            </div>
+
+            {{-- Captcha --}}
+            <div class="mb-4">
+                <label for="captcha" class="form-label">Verification Code</label>
+                <div class="captcha-wrapper">
+                    <div class="captcha-image-container">
+                        <img id="captcha-image" src="{{ captcha_src('default') }}" alt="captcha" class="captcha-image"
+                            title="Click to refresh">
+                        <button type="button" class="captcha-refresh" id="captcha-refresh" title="Refresh captcha">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </button>
+                    </div>
+                    <input type="text" class="form-control @error('captcha') is-invalid @enderror" id="captcha"
+                        name="captcha" placeholder="Enter the code above" required autocomplete="off">
+                    @error('captcha')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
 
@@ -82,6 +101,20 @@
                 field.type = 'password';
                 icon.className = 'bi bi-eye';
             }
+        }
+
+        // Captcha refresh
+        document.getElementById('captcha-refresh').addEventListener('click', function() {
+            refreshCaptcha();
+        });
+
+        document.getElementById('captcha-image').addEventListener('click', function() {
+            refreshCaptcha();
+        });
+
+        function refreshCaptcha() {
+            const img = document.getElementById('captcha-image');
+            img.src = '{{ captcha_src('default') }}?' + Date.now();
         }
     </script>
 @endpush
