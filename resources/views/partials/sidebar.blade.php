@@ -75,6 +75,11 @@
                     <i class="bi bi-building-fill"></i>
                     <span>Companies</span>
                 </a>
+                <a class="sidebar-link {{ request()->routeIs('admin.notifications.*') ? 'active' : '' }}"
+                    href="{{ route('admin.notifications.index') }}">
+                    <i class="bi bi-bell-fill"></i>
+                    <span>Notifications</span>
+                </a>
             @endif
         @endif
     </nav>

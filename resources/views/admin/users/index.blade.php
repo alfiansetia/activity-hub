@@ -141,7 +141,7 @@
                                         {{-- Delete --}}
                                         @if ($user->id !== auth()->id())
                                             <form method="POST" action="{{ route('admin.users.destroy', $user) }}"
-                                                onsubmit="return confirm('Delete this user?')" class="d-inline">
+                                                class="d-inline delete-form">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-outline-secondary btn-sm"
@@ -308,3 +308,29 @@
         @endif
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.querySelectorAll('.delete-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formEl = this;
+
+                Swal.fire({
+                    title: 'Delete User?',
+                    text: 'This user will be permanently deleted.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        formEl.submit();
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

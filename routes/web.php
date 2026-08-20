@@ -3,10 +3,12 @@
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\Admin\CompanyController;
+use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -72,5 +74,17 @@ Route::middleware('auth')->group(function () {
         Route::post('/companies', [CompanyController::class, 'store'])->name('companies.store');
         Route::put('/companies/{company}', [CompanyController::class, 'update'])->name('companies.update');
         Route::delete('/companies/{company}', [CompanyController::class, 'destroy'])->name('companies.destroy');
+
+        // Notifications
+        Route::get('/notifications', [AdminNotificationController::class, 'index'])->name('notifications.index');
+        Route::get('/notifications/create', [AdminNotificationController::class, 'create'])->name('notifications.create');
+        Route::post('/notifications', [AdminNotificationController::class, 'store'])->name('notifications.store');
+        Route::delete('/notifications/{notification}', [AdminNotificationController::class, 'destroy'])->name('notifications.destroy');
     });
+
+    // API Notification routes (AJAX)
+    Route::get('/api/notifications', [NotificationController::class, 'fetch'])->name('api.notifications.fetch');
+    Route::get('/api/notifications/{id}', [NotificationController::class, 'show'])->name('api.notifications.show');
+    Route::post('/api/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('api.notifications.read');
+    Route::post('/api/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('api.notifications.read-all');
 });

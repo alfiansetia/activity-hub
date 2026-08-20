@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -92,5 +93,25 @@ class User extends Authenticatable
     public function getCompanyIsNoneAttribute(): bool
     {
         return strtolower($this->company_status) === 'none';
+    }
+
+    /**
+     * Notifications received by this user.
+     */
+    public function notifications(): BelongsToMany
+    {
+        return $this->belongsToMany(Notification::class)
+            ->withPivot('read_at')
+            ->withTimestamps()
+            ->orderByPivot('created_at', 'desc');
+    }
+
+    /**
+     * Unread notifications for this user.
+     */
+    public function unreadNotifications(): BelongsToMany
+    {
+        return $this->notifications()
+            ->wherePivot('read_at', null);
     }
 }

@@ -72,7 +72,7 @@
                                             <i class="bi bi-pencil"></i>
                                         </button>
                                         <form method="POST" action="{{ route('admin.companies.destroy', $company) }}"
-                                            onsubmit="return confirm('Delete this company?')" class="d-inline">
+                                            class="d-inline delete-form">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-outline-danger" title="Delete">
@@ -157,3 +157,29 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.querySelectorAll('.delete-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formEl = this;
+
+                Swal.fire({
+                    title: 'Delete Company?',
+                    text: 'This company will be permanently deleted.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        formEl.submit();
+                    }
+                });
+            });
+        });
+    </script>
+@endpush
