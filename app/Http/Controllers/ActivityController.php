@@ -152,8 +152,8 @@ class ActivityController extends Controller
             abort(403);
         }
 
-        $activity->load(['user', 'company', 'attachments', 'acceptor', 'rejector']);
-        return view('activities.show', compact('activity'));
+        $data = $this->prepareReportData($activity);
+        return view('activities.show', $data);
     }
 
     public function edit(Activity $activity)
@@ -285,6 +285,7 @@ class ActivityController extends Controller
         }
 
         $data = $this->prepareReportData($activity);
+        $data['isPreview'] = true;
 
         return view('activities.pdf', $data);
     }
@@ -299,6 +300,7 @@ class ActivityController extends Controller
         }
 
         $data = $this->prepareReportData($activity);
+        $data['isPreview'] = false;
 
         $pdf = Pdf::loadView('activities.pdf', $data)
             ->setPaper('a4', 'portrait')

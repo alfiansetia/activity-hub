@@ -104,13 +104,15 @@
                 <h2 class="activity-show-title">{{ $activity->title }}</h2>
                 <div class="d-flex flex-wrap gap-2 mt-2">
                     <span class="activity-meta-pill">
-                        <i class="bi bi-building-fill"></i> {{ $activity->company->name ?? '-' }}
+                        <i class="bi bi-building-fill"></i>
+                        {{ $activity->company->name ?? '-' }}{{ $activity->additional_location ? ' (' . $activity->additional_location . ')' : '' }}
                     </span>
                     <span class="activity-meta-pill">
                         <i class="bi bi-person-fill"></i> {{ $activity->user->name ?? '-' }}
                     </span>
                     <span class="activity-meta-pill">
-                        <i class="bi bi-calendar3"></i> {{ $activity->date?->format('d M Y, H:i') ?? '-' }}
+                        <i class="bi bi-calendar3"></i> {{ $dayName ?? '' }},
+                        {{ $activity->date?->format('d M Y, H:i') ?? '-' }}
                     </span>
                     <span class="activity-meta-pill">
                         <i class="bi bi-hash"></i> {{ $activity->id }}
@@ -138,96 +140,67 @@
     <div class="row g-4">
         {{-- Main Content --}}
         <div class="col-lg-8">
-            {{-- Description --}}
-            @if ($activity->descriptions)
-                <div class="card mb-4 fade-up fade-up-delay-2">
-                    <div class="card-header">
-                        <h6 class="mb-0 fw-bold">
-                            <i class="bi bi-text-left me-2" style="color: var(--primary);"></i> Description
-                        </h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="detail-content">{{ $activity->descriptions }}</div>
-                    </div>
+            {{-- 1. Peralatan / Perisian / Dokumen yang digunakan --}}
+            <div class="card mb-4 fade-up fade-up-delay-2">
+                <div class="card-header">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="bi bi-tools me-2" style="color: var(--info);"></i> Peralatan / Perisian / Dokumen yang
+                        digunakan :
+                    </h6>
                 </div>
-            @endif
-
-            {{-- Rules --}}
-            @if ($activity->rules)
-                <div class="card mb-4 fade-up fade-up-delay-2">
-                    <div class="card-header">
-                        <h6 class="mb-0 fw-bold">
-                            <i class="bi bi-list-check me-2" style="color: var(--warning);"></i> Rules
-                        </h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="detail-content">{{ $activity->rules }}</div>
-                    </div>
+                <div class="card-body">
+                    <div class="detail-content">{{ $activity->tools ?: '-' }}</div>
                 </div>
-            @endif
+            </div>
 
-            {{-- Tools --}}
-            @if ($activity->tools)
-                <div class="card mb-4 fade-up fade-up-delay-3">
-                    <div class="card-header">
-                        <h6 class="mb-0 fw-bold">
-                            <i class="bi bi-tools me-2" style="color: var(--info);"></i> Tools
-                        </h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="detail-content">{{ $activity->tools }}</div>
-                    </div>
+            {{-- 2. Pengujian yang dijalankan (sekiranya ada) --}}
+            <div class="card mb-4 fade-up fade-up-delay-2">
+                <div class="card-header">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="bi bi-clipboard-check me-2" style="color: var(--success);"></i> Pengujian yang dijalankan
+                        (sekiranya ada) :
+                    </h6>
                 </div>
-            @endif
-
-            {{-- Additional Location --}}
-            @if ($activity->additional_location)
-                <div class="card mb-4 fade-up fade-up-delay-3">
-                    <div class="card-header">
-                        <h6 class="mb-0 fw-bold">
-                            <i class="bi bi-geo-alt me-2" style="color: var(--danger);"></i> Additional Location
-                        </h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="detail-content">{{ $activity->additional_location }}</div>
-                    </div>
+                <div class="card-body">
+                    <div class="detail-content">{{ $activity->tests ?: '-' }}</div>
                 </div>
-            @endif
+            </div>
 
-            {{-- Tests --}}
-            @if ($activity->tests)
-                <div class="card mb-4 fade-up fade-up-delay-3">
-                    <div class="card-header">
-                        <h6 class="mb-0 fw-bold">
-                            <i class="bi bi-clipboard-check me-2" style="color: var(--success);"></i> Tests
-                        </h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="detail-content">{{ $activity->tests }}</div>
-                    </div>
+            {{-- 3. Langkah-langkah Keselamatan (sekiranya ada) --}}
+            <div class="card mb-4 fade-up fade-up-delay-2">
+                <div class="card-header">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="bi bi-shield-check me-2" style="color: var(--warning);"></i> Langkah-langkah Keselamatan
+                        (sekiranya ada) :
+                    </h6>
                 </div>
-            @endif
-
-            {{-- Ulasan --}}
-            @if ($activity->ulasan)
-                <div class="card mb-4 fade-up fade-up-delay-3">
-                    <div class="card-header">
-                        <h6 class="mb-0 fw-bold">
-                            <i class="bi bi-chat-text me-2" style="color: var(--primary);"></i> Ulasan
-                        </h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="detail-content">{{ $activity->ulasan }}</div>
-                    </div>
+                <div class="card-body">
+                    <div class="detail-content">{{ $activity->rules ?: '-' }}</div>
                 </div>
-            @endif
+            </div>
 
-            {{-- Attachments --}}
+            {{-- 4. Perincian Kerja / Projek --}}
+            <div class="card mb-4 fade-up fade-up-delay-3">
+                <div class="card-header">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="bi bi-text-left me-2" style="color: var(--primary);"></i> Perincian Kerja / Projek :
+                    </h6>
+                    <small class="text-muted d-block fw-normal mt-1" style="font-size: 0.82rem; font-style: italic;">
+                        (Langkah kerja, pengiraan, carta / jadual dan gambar rajah yang bersesuaian perlu disertakan)
+                    </small>
+                </div>
+                <div class="card-body">
+                    <div class="detail-content">{{ $activity->descriptions ?: '-' }}</div>
+                </div>
+            </div>
+
+            {{-- 5. Lampiran Perincian Kerja / Projek (sekiranya ada) --}}
             @if ($activity->attachments->count())
-                <div class="card fade-up fade-up-delay-3">
+                <div class="card mb-4 fade-up fade-up-delay-3">
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <h6 class="mb-0 fw-bold">
-                            <i class="bi bi-images me-2" style="color: var(--success);"></i> Attachments
+                            <i class="bi bi-images me-2" style="color: var(--success);"></i> Lampiran Perincian Kerja /
+                            Projek (sekiranya ada) :
                         </h6>
                         <span class="badge badge-soft-primary">
                             {{ $activity->attachments->count() }}
@@ -237,7 +210,7 @@
                     <div class="card-body">
                         <div class="row g-3 attachment-grid">
                             @foreach ($activity->attachments as $att)
-                                <div class="col-sm-6 col-md-4">
+                                <div class="col-6">
                                     <div class="attachment-card" data-bs-toggle="modal"
                                         data-bs-target="#lightbox{{ $att->id }}">
                                         <div class="attachment-img-wrapper">
@@ -249,7 +222,7 @@
                                         </div>
                                         <div class="attachment-caption">
                                             <i class="bi bi-chat-quote me-1"></i>
-                                            {{ $att->caption ?: 'No caption' }}
+                                            {{ $att->caption ?: 'Tiada keterangan' }}
                                         </div>
                                     </div>
                                 </div>
@@ -258,6 +231,18 @@
                     </div>
                 </div>
             @endif
+
+            {{-- 6. Ulasan Penyelia Syarikat --}}
+            <div class="card mb-4 fade-up fade-up-delay-3">
+                <div class="card-header">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="bi bi-chat-text me-2" style="color: var(--primary);"></i> Ulasan Penyelia Syarikat :
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="detail-content">{{ $activity->ulasan ?: '-' }}</div>
+                </div>
+            </div>
 
             {{-- Lightbox Modals --}}
             @foreach ($activity->attachments as $att)
@@ -359,8 +344,10 @@
                                 <i class="bi bi-building-fill"></i>
                             </div>
                             <div>
-                                <div class="detail-info-label">Company</div>
-                                <div class="detail-info-value">{{ $activity->company->name ?? '-' }}</div>
+                                <div class="detail-info-label">Tempat / Lokasi</div>
+                                <div class="detail-info-value">
+                                    {{ $activity->company->name ?? '-' }}{{ $activity->additional_location ? ' (' . $activity->additional_location . ')' : '' }}
+                                </div>
                             </div>
                         </div>
                         <div class="detail-info-item">

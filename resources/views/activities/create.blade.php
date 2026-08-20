@@ -23,11 +23,11 @@
                 <div class="row g-3">
                     {{-- Title --}}
                     <div class="col-12">
-                        <label for="title" class="form-label fw-semibold">Title <span
+                        <label for="title" class="form-label fw-semibold">Tajuk Kerja / Projek <span
                                 class="text-danger">*</span></label>
                         <input type="text" id="title" name="title"
                             class="form-control @error('title') is-invalid @enderror" value="{{ old('title') }}"
-                            placeholder="Enter activity title" required>
+                            placeholder="Masukkan tajuk kerja / projek" required>
                         @error('title')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -36,7 +36,7 @@
                     {{-- Company --}}
                     @if (auth()->user()->is_admin)
                         <div class="col-md-6">
-                            <label for="company_id" class="form-label fw-semibold">Company <span
+                            <label for="company_id" class="form-label fw-semibold">Company / Syarikat <span
                                     class="text-danger">*</span></label>
                             <select id="company_id" name="company_id"
                                 class="form-select @error('company_id') is-invalid @enderror" required>
@@ -54,7 +54,7 @@
                         </div>
                     @else
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">Company</label>
+                            <label class="form-label fw-semibold">Tempat / Lokasi (Syarikat)</label>
                             <input type="hidden" name="company_id" value="{{ $defaultCompanyId }}">
                             <input type="text" class="form-control" value="{{ $companies->first()?->name }}" readonly
                                 disabled>
@@ -64,40 +64,22 @@
 
                     {{-- Additional Location --}}
                     <div class="col-md-6">
-                        <label for="additional_location" class="form-label fw-semibold">Additional Location</label>
+                        <label for="additional_location" class="form-label fw-semibold">Additional Location / Lokasi
+                            Tambahan</label>
                         <input type="text" id="additional_location" name="additional_location"
                             class="form-control @error('additional_location') is-invalid @enderror"
-                            value="{{ old('additional_location') }}" placeholder="e.g. Meeting room, Lab, etc.">
+                            value="{{ old('additional_location') }}" placeholder="e.g. site a, Bengkel, Lab, dll.">
                         @error('additional_location')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    {{-- Description --}}
-                    <div class="col-12">
-                        <label for="descriptions" class="form-label fw-semibold">Description</label>
-                        <textarea id="descriptions" name="descriptions" class="form-control @error('descriptions') is-invalid @enderror"
-                            rows="4" placeholder="Describe the activity...">{{ old('descriptions') }}</textarea>
-                        @error('descriptions')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    {{-- Rules --}}
-                    <div class="col-md-6">
-                        <label for="rules" class="form-label fw-semibold">Rules</label>
-                        <textarea id="rules" name="rules" class="form-control @error('rules') is-invalid @enderror" rows="3"
-                            placeholder="Activity rules...">{{ old('rules') }}</textarea>
-                        @error('rules')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     {{-- Tools --}}
                     <div class="col-md-6">
-                        <label for="tools" class="form-label fw-semibold">Tools</label>
+                        <label for="tools" class="form-label fw-semibold">Peralatan / Perisian / Dokumen yang
+                            digunakan</label>
                         <textarea id="tools" name="tools" class="form-control @error('tools') is-invalid @enderror" rows="3"
-                            placeholder="Required tools...">{{ old('tools') }}</textarea>
+                            placeholder="Senaraikan peralatan / perisian / dokumen yang digunakan...">{{ old('tools') }}</textarea>
                         @error('tools')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -105,20 +87,45 @@
 
                     {{-- Tests --}}
                     <div class="col-md-6">
-                        <label for="tests" class="form-label fw-semibold">Tests</label>
+                        <label for="tests" class="form-label fw-semibold">Pengujian yang dijalankan (sekiranya
+                            ada)</label>
                         <textarea id="tests" name="tests" class="form-control @error('tests') is-invalid @enderror" rows="3"
-                            placeholder="Describe the tests or criteria...">{{ old('tests') }}</textarea>
+                            placeholder="Perincikan pengujian yang dijalankan...">{{ old('tests') }}</textarea>
                         @error('tests')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    {{-- Rules --}}
+                    <div class="col-md-6">
+                        <label for="rules" class="form-label fw-semibold">Langkah-langkah Keselamatan (sekiranya
+                            ada)</label>
+                        <textarea id="rules" name="rules" class="form-control @error('rules') is-invalid @enderror" rows="3"
+                            placeholder="Senaraikan langkah-langkah keselamatan...">{{ old('rules') }}</textarea>
+                        @error('rules')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     {{-- Ulasan --}}
                     <div class="col-md-6">
-                        <label for="ulasan" class="form-label fw-semibold">Ulasan</label>
+                        <label for="ulasan" class="form-label fw-semibold">Ulasan Penyelia Syarikat</label>
                         <textarea id="ulasan" name="ulasan" class="form-control @error('ulasan') is-invalid @enderror" rows="3"
-                            placeholder="Tulis ulasan atau review kegiatan...">{{ old('ulasan') }}</textarea>
+                            placeholder="Ulasan penyelia syarikat (sekiranya ada)...">{{ old('ulasan') }}</textarea>
                         @error('ulasan')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    {{-- Description --}}
+                    <div class="col-12">
+                        <label for="descriptions" class="form-label fw-semibold">Perincian Kerja / Projek</label>
+                        <small class="text-muted d-block mb-1" style="font-style: italic;">
+                            (Langkah kerja, pengiraan, carta / jadual dan gambar rajah yang bersesuaian perlu disertakan)
+                        </small>
+                        <textarea id="descriptions" name="descriptions" class="form-control @error('descriptions') is-invalid @enderror"
+                            rows="5" placeholder="Perincian langkah kerja / projek...">{{ old('descriptions') }}</textarea>
+                        @error('descriptions')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
