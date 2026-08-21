@@ -100,15 +100,20 @@
 @push('scripts')
     <script>
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        let notificationsLoaded = false;
         let notifCurrentPage = 1;
         let notifHasMore = false;
         let notifLoadingMore = false;
 
         function loadNotifications() {
-            if (notificationsLoaded) return;
-
             notifCurrentPage = 1;
+
+            // Show loading spinner
+            document.getElementById('notificationList').innerHTML = `
+                <div class="text-center text-muted py-4">
+                    <div class="spinner-border spinner-border-sm text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>`;
 
             fetch('{{ route('api.notifications.fetch') }}?page=1', {
                     headers: {
@@ -117,7 +122,6 @@
                 })
                 .then(res => res.json())
                 .then(data => {
-                    notificationsLoaded = true;
                     notifHasMore = data.has_more;
                     notifCurrentPage = data.current_page;
                     updateBadge(data.unread_count);
@@ -250,7 +254,6 @@
                     modal.show();
 
                     // Refresh notifications list
-                    notificationsLoaded = false;
                     loadNotifications();
                 })
                 .catch(err => {
@@ -272,7 +275,6 @@
                 .then(res => res.json())
                 .then(() => {
                     updateBadge(0);
-                    notificationsLoaded = false;
                     loadNotifications();
                 });
         }
